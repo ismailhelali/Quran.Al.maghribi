@@ -34,6 +34,11 @@
             margin-top: 10px;
             font-size: 16px;
         }
+
+        /* Hidden container for printing */
+        #printContainer {
+            display: none;
+        }
     </style>
     <title>Éditeur de texte Almaghribi</title>
 </head>
@@ -46,8 +51,11 @@
         <br>
         <textarea id="output" name="output" readonly></textarea>
         <br>
-        <button type="button" onclick="downloadPDF()">Télécharger en PDF</button>
+        <button type="button" onclick="printOutput()">Imprimer le texte en PDF</button>
     </form>
+
+    <!-- Hidden container for printing -->
+    <div id="printContainer"></div>
 
     <script type="text/javascript">
         function displayText() {
@@ -65,14 +73,18 @@
             }
         }
 
-        function downloadPDF() {
+        function printOutput() {
             const outputText = document.getElementById('output').value.trim();
 
             if (outputText) {
-                // Trigger the print dialog
+                // Create a hidden container
+                const printContainer = document.getElementById('printContainer');
+                printContainer.innerText = outputText;
+
+                // Trigger the print dialog for the hidden container
                 window.print();
             } else {
-                alert('Veuillez afficher le texte avant de télécharger en PDF.');
+                alert('Veuillez afficher le texte avant d\'imprimer en PDF.');
             }
         }
     </script>
