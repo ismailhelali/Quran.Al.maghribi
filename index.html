@@ -30,30 +30,30 @@
 </head>
 <body>
     <h1>Almaghribi Text Editor</h1>
-    <label for="fileInput">Choose a Word document:</label>
-    <input type="file" id="fileInput" accept=".doc">
+    <textarea id="textInput" placeholder="Type or paste your text here..."></textarea>
     <br>
-    <button onclick="readAndDisplayDocument()">Read and Display Document</button>
+    <button onclick="displayText()">Display Text</button>
     <br>
     <textarea id="output" readonly></textarea>
 
     <script>
-        function readAndDisplayDocument() {
-            const fileInput = document.getElementById('fileInput');
+        function displayText() {
+            const inputTextArea = document.getElementById('textInput');
             const outputTextArea = document.getElementById('output');
 
-            if (fileInput.files.length > 0) {
-                const file = fileInput.files[0];
-                const reader = new FileReader();
+            const textContent = inputTextArea.value.trim();
 
-                reader.onload = function (e) {
-                    const content = e.target.result;
-                    outputTextArea.value = content;
-                };
+            if (textContent) {
+                // Apply custom font to the output textarea
+                outputTextArea.style.fontFamily = 'Almaghribi';
 
-                reader.readAsText(file);
+                // Set direction to right-to-left
+                outputTextArea.setAttribute('dir', 'rtl');
+
+                // Display the input text in the output textarea
+                outputTextArea.value = textContent;
             } else {
-                alert('Please choose a Word document.');
+                alert('Please enter or paste some text.');
             }
         }
     </script>
