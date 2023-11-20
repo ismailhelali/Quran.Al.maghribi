@@ -21,19 +21,8 @@
             line-height: 1.6; /* Line height */
             white-space: pre-line; /* Handle line breaks */
             margin: 20px;
-        }
-
-        textarea {
-            height: 200px;
             border: 2px solid #ccc; /* Add a border for visibility */
             padding: 10px; /* Add internal spacing */
-        }
-
-        @font-face {
-            font-family: 'Almaghribi';
-            src: url('AALMAGHRIBI.ttf') format('truetype');
-            /* Add additional formats if needed (e.g., woff, woff2) */
-            unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
         }
 
         select, button {
@@ -43,10 +32,7 @@
 
         .output-container canvas {
             border: 2px solid #ccc; /* Add a border for visibility */
-        }
-
-        .hidden {
-            display: none;
+            display: none; /* Initially hide the canvas */
         }
     </style>
     <title>Almaghribi Text Editor</title>
@@ -60,10 +46,10 @@
         <option value="pdf">تحميل النص على شكل PDF</option>
     </select>
     <br>
-    <button onclick="displayText()">Display Text</button>
-    <button onclick="downloadFile()">Download File</button>
+    <button onclick="displayText()">Afficher le texte</button>
+    <button onclick="downloadFile()">Télécharger le fichier</button>
     <div class="output-container" id="outputContainer">
-        <canvas id="canvas" class="hidden"></canvas>
+        <canvas id="canvas"></canvas>
         <textarea id="output" readonly></textarea>
     </div>
 
@@ -88,7 +74,7 @@
                 // Display the output container
                 outputContainer.style.display = 'block';
             } else {
-                alert('Please enter or paste some text.');
+                alert('Veuillez entrer ou coller du texte.');
             }
         }
 
@@ -103,8 +89,8 @@
                     // Convert the text to an image using html2canvas
                     html2canvas(outputContainer).then(c => {
                         // Show the canvas and hide the textarea
-                        canvas.classList.remove('hidden');
-                        outputTextArea.classList.add('hidden');
+                        canvas.style.display = 'block';
+                        outputTextArea.style.display = 'none';
 
                         // Replace the content of the canvas with the image data
                         const ctx = canvas.getContext('2d');
@@ -121,8 +107,8 @@
                     });
                 } else if (selectedFormat === 'pdf') {
                     // Show the textarea and hide the canvas
-                    outputTextArea.classList.remove('hidden');
-                    canvas.classList.add('hidden');
+                    outputTextArea.style.display = 'block';
+                    canvas.style.display = 'none';
 
                     // Create a PDF using jsPDF
                     const pdf = new jsPDF('p', 'mm', 'a4');
@@ -130,7 +116,7 @@
                     pdf.save('text_as_pdf.pdf');
                 }
             } else {
-                alert('Please display the text before downloading.');
+                alert('Veuillez afficher le texte avant de télécharger.');
             }
         }
     </script>
