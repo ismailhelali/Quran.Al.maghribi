@@ -13,26 +13,31 @@
             width: 80%;
             height: 200px;
             margin: 20px;
-            font-family: 'Almaghribi', cursive; /* Apply the custom font to the textarea */
-            letter-spacing: 0.1em;
-            word-spacing: 0.2em;
+            font-family: 'Almaghribi', cursive; /* Appliquer la police personnalisée au textarea */
+            letter-spacing: 0.05em; /* Espacement entre les lettres */
+            word-spacing: 0.15em; /* Espacement entre les mots */
             text-rendering: optimizeLegibility;
+            font-size: 18px; /* Taille de police */
+            line-height: 1.6; /* Hauteur de ligne */
+            white-space: pre-line; /* Gérer les sauts de ligne */
+            border: 2px solid #ccc; /* Ajouter une bordure pour plus de visibilité */
+            padding: 10px; /* Ajouter un espacement interne */
         }
 
         @font-face {
             font-family: 'Almaghribi';
             src: url('AALMAGHRIBI.ttf') format('truetype');
-            /* Add additional formats if needed (e.g., woff, woff2) */
+            /* Ajouter des formats supplémentaires si nécessaire (par exemple, woff, woff2) */
             unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
         }
     </style>
-    <title>Almaghribi Text Editor</title>
+    <title>Éditeur de texte Almaghribi</title>
 </head>
 <body>
-    <h1>Almaghribi Text Editor</h1>
-    <textarea id="textInput" placeholder="Type or paste your text here..."></textarea>
+    <h1>Éditeur de texte Almaghribi</h1>
+    <textarea id="textInput" placeholder="Tapez ou collez votre texte ici..."></textarea>
     <br>
-    <button onclick="displayText()">Display Text</button>
+    <button onclick="displayText()">Afficher le texte</button>
     <br>
     <textarea id="output" readonly></textarea>
 
@@ -44,16 +49,16 @@
             const textContent = inputTextArea.value.trim();
 
             if (textContent) {
-                // Apply custom font to the output textarea
+                // Appliquer la police personnalisée au textarea de sortie
                 outputTextArea.style.fontFamily = 'Almaghribi';
 
-                // Set direction to right-to-left
+                // Définir la direction de droite à gauche
                 outputTextArea.setAttribute('dir', 'rtl');
 
-                // Display the input text in the output textarea
+                // Afficher le texte saisi dans le textarea de sortie
                 outputTextArea.value = textContent;
             } else {
-                alert('Please enter or paste some text.');
+                alert('Veuillez entrer ou coller du texte.');
             }
         }
     </script>
