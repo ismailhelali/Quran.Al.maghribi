@@ -47,7 +47,7 @@
         <br>
         <textarea id="output" name="output" readonly></textarea>
         <br>
-        <button type="submit" onclick="downloadPDF()">Télécharger en PDF</button>
+        <button type="button" onclick="downloadPDF()">Télécharger en PDF</button>
     </form>
 
     <script>
@@ -78,6 +78,11 @@
                 alert('Veuillez afficher le texte avant de télécharger.');
             }
         }
+
+        // Prevent form submission on button click
+        document.getElementById('downloadForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+        });
     </script>
 </body>
 </html>
