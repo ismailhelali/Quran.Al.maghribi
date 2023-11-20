@@ -21,30 +21,22 @@
 </head>
 <body>
     <h1>Almaghribi Text Editor</h1>
-    <label for="fileInput">Choose file:</label>
-    <input type="file" id="fileInput" accept=".jpeg, .jpg, .pdf">
+    <label for="textInput">Enter or paste your text:</label>
     <br>
-    <button onclick="importText()">Import Text</button>
+    <textarea id="textInput"></textarea>
+    <br>
+    <button onclick="applyCustomFont()">Apply Custom Font</button>
     <br>
     <textarea id="output" readonly></textarea>
 
     <script>
-        function importText() {
-            const fileInput = document.getElementById('fileInput');
+        function applyCustomFont() {
+            const inputTextArea = document.getElementById('textInput');
             const outputTextArea = document.getElementById('output');
 
-            const file = fileInput.files[0];
+            const textContent = inputTextArea.value.trim();
 
-            if (file) {
-                const reader = new FileReader();
-
-                reader.onload = function(e) {
-                    const textContent = e.target.result;
-                    outputTextArea.value = textContent;
-                };
-
-                reader.readAsText(file);
-
+            if (textContent) {
                 // Apply custom font
                 const style = document.createElement('style');
                 style.textContent = `
@@ -54,8 +46,14 @@
                     }
                 `;
                 document.head.appendChild(style);
+
+                // Apply the custom font to the output textarea
+                outputTextArea.style.fontFamily = 'Almaghribi';
+
+                // Display the input text in the output textarea
+                outputTextArea.value = textContent;
             } else {
-                alert('Please select a file.');
+                alert('Please enter or paste some text.');
             }
         }
     </script>
