@@ -3,37 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <style>
         body {
             font-family: 'Almaghribi', cursive;
             text-align: center;
         }
 
-        textarea, #output {
+        textarea {
             width: 80%;
             height: 200px;
             margin: 20px;
-            font-family: 'Almaghribi', cursive;
-            letter-spacing: 0.05em;
-            word-spacing: 0.15em;
+            font-family: 'Almaghribi', cursive; /* Appliquer la police personnalisée au textarea */
+            letter-spacing: 0.05em; /* Espacement entre les lettres */
+            word-spacing: 0.15em; /* Espacement entre les mots */
             text-rendering: optimizeLegibility;
-            font-size: 18px;
-            line-height: 1.6;
-            white-space: pre-line;
-            border: 2px solid #ccc;
-            padding: 10px;
+            font-size: 18px; /* Taille de police */
+            line-height: 1.6; /* Hauteur de ligne */
+            white-space: pre-line; /* Gérer les sauts de ligne */
+            border: 2px solid #ccc; /* Ajouter une bordure pour plus de visibilité */
+            padding: 10px; /* Ajouter un espacement interne */
         }
 
         @font-face {
             font-family: 'Almaghribi';
             src: url('AALMAGHRIBI.ttf') format('truetype');
+            /* Ajouter des formats supplémentaires si nécessaire (par exemple, woff, woff2) */
             unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
-        }
-
-        button {
-            margin-top: 10px;
-            font-size: 16px;
         }
     </style>
     <title>Éditeur de texte Almaghribi</title>
@@ -43,7 +38,6 @@
     <textarea id="textInput" placeholder="Tapez ou collez votre texte ici..."></textarea>
     <br>
     <button onclick="displayText()">Afficher le texte</button>
-    <button onclick="downloadPDF()">Télécharger en PDF</button>
     <br>
     <textarea id="output" readonly></textarea>
 
@@ -55,24 +49,16 @@
             const textContent = inputTextArea.value.trim();
 
             if (textContent) {
+                // Appliquer la police personnalisée au textarea de sortie
                 outputTextArea.style.fontFamily = 'Almaghribi';
+
+                // Définir la direction de droite à gauche
                 outputTextArea.setAttribute('dir', 'rtl');
+
+                // Afficher le texte saisi dans le textarea de sortie
                 outputTextArea.value = textContent;
             } else {
                 alert('Veuillez entrer ou coller du texte.');
-            }
-        }
-
-        function downloadPDF() {
-            const outputTextArea = document.getElementById('output').value;
-
-            if (outputTextArea) {
-                // Create a PDF using jsPDF
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                pdf.text(outputTextArea, 10, 10);
-                pdf.save('text_as_pdf.pdf');
-            } else {
-                alert('Veuillez afficher le texte avant de télécharger.');
             }
         }
     </script>
