@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://rawgit.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
     <style>
         body {
             font-family: 'Almaghribi', cursive;
@@ -69,15 +70,12 @@
             const outputText = document.getElementById('output').value.trim();
 
             if (outputText) {
-                const blob = new Blob([outputText], { type: 'application/pdf' });
-
-                // Create a download link
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = 'output.pdf';
-
-                // Trigger the download
-                link.click();
+                const element = document.getElementById('output');
+                html2pdf(element, {
+                    margin: 10,
+                    filename: 'output.pdf',
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                });
             } else {
                 alert('Veuillez afficher le texte avant de télécharger en PDF.');
             }
