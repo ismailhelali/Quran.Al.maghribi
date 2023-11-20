@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,11 +21,11 @@
 </head>
 <body>
     <h1>Almaghribi Text Editor</h1>
-    <label for="textInput">Enter or paste your text:</label>
+    <label for="textInput">أدخل أو الصق النص الخاص بك:</label>
     <br>
     <textarea id="textInput"></textarea>
     <br>
-    <button onclick="applyCustomFont()">Apply Custom Font</button>
+    <button onclick="applyCustomFont()">تطبيق الخط المخصص</button>
     <br>
     <textarea id="output" readonly></textarea>
 
@@ -47,13 +47,14 @@
                 `;
                 document.head.appendChild(style);
 
-                // Apply the custom font to the output textarea
+                // Apply the custom font and set direction to right-to-left
                 outputTextArea.style.fontFamily = 'Almaghribi';
+                outputTextArea.setAttribute('dir', 'rtl');
 
                 // Display the input text in the output textarea
                 outputTextArea.value = textContent;
             } else {
-                alert('Please enter or paste some text.');
+                alert('الرجاء إدخال أو لصق النص.');
             }
         }
     </script>
