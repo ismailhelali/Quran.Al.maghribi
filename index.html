@@ -34,6 +34,10 @@
             border: 2px solid #ccc; /* Add a border for visibility */
             display: none; /* Initially hide the canvas */
         }
+
+        .hidden {
+            display: none;
+        }
     </style>
     <title>Almaghribi Text Editor</title>
 </head>
@@ -49,8 +53,8 @@
     <button onclick="displayText()">Afficher le texte</button>
     <button onclick="downloadFile()">Télécharger le fichier</button>
     <div class="output-container" id="outputContainer">
-        <canvas id="canvas"></canvas>
-        <textarea id="output" readonly></textarea>
+        <canvas id="canvas" class="hidden"></canvas>
+        <textarea id="output" class="hidden" readonly></textarea>
     </div>
 
     <script>
@@ -80,43 +84,41 @@
 
         function downloadFile() {
             const selectedFormat = document.getElementById('downloadFormat').value;
-            const outputTextArea = document.getElementById('output').value;
+            const outputTextArea = document.getElementById('output');
             const outputContainer = document.getElementById('outputContainer');
             const canvas = document.getElementById('canvas');
 
-            if (outputTextArea) {
-                if (selectedFormat === 'image') {
-                    // Convert the text to an image using html2canvas
-                    html2canvas(outputContainer).then(c => {
-                        // Show the canvas and hide the textarea
-                        canvas.style.display = 'block';
-                        outputTextArea.style.display = 'none';
+            if (selectedFormat === 'image') {
+                // Convert the text to an image using html2canvas
+                html2canvas(outputTextArea).then(c => {
+                    // Show the canvas and hide the textarea
+                    canvas.classList.remove('hidden');
+                    outputTextArea.classList.add('hidden');
 
-                        // Replace the content of the canvas with the image data
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(c, 0, 0);
+                    // Replace the content of the canvas with the image data
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(c, 0, 0);
 
-                        // Convert the canvas to a data URL
-                        const imgData = canvas.toDataURL('image/png');
+                    // Convert the canvas to a data URL
+                    const imgData = canvas.toDataURL('image/png');
 
-                        // Create a link and trigger the download
-                        const link = document.createElement('a');
-                        link.href = imgData;
-                        link.download = 'text_as_image.png';
-                        link.click();
-                    });
-                } else if (selectedFormat === 'pdf') {
-                    // Show the textarea and hide the canvas
-                    outputTextArea.style.display = 'block';
-                    canvas.style.display = 'none';
+                    // Create a link and trigger the download
+                    const link = document.createElement('a');
+                    link.href = imgData;
+                    link.download = 'text_as_image.png';
+                    link.click();
+                });
+            } else if (selectedFormat === 'pdf') {
+                // Show the textarea and hide the canvas
+                outputTextArea.classList.remove('hidden');
+                canvas.classList.add('hidden');
 
-                    // Create a PDF using jsPDF
-                    const pdf = new jsPDF('p', 'mm', 'a4');
-                    pdf.text(outputTextArea.value, 10, 10);
-                    pdf.save('text_as_pdf.pdf');
-                }
+                // Create a PDF using jsPDF
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                pdf.text(outputTextArea.value, 10, 10);
+                pdf.save('text_as_pdf.pdf');
             } else {
-                alert('Veuillez afficher le texte avant de télécharger.');
+                alert('Veuillez sélectionner un format de téléchargement valide.');
             }
         }
     </script>
