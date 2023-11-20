@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <style>
         body {
@@ -11,114 +10,69 @@
             text-align: center;
         }
 
-        textarea, .output-container {
+        textarea, #output {
             width: 80%;
-            font-family: 'Almaghribi', cursive; /* Apply the custom font */
-            letter-spacing: 0.05em; /* Letter spacing */
-            word-spacing: 0.15em; /* Word spacing */
-            text-rendering: optimizeLegibility;
-            font-size: 18px; /* Font size */
-            line-height: 1.6; /* Line height */
-            white-space: pre-line; /* Handle line breaks */
+            height: 200px;
             margin: 20px;
-            border: 2px solid #ccc; /* Add a border for visibility */
-            padding: 10px; /* Add internal spacing */
+            font-family: 'Almaghribi', cursive;
+            letter-spacing: 0.05em;
+            word-spacing: 0.15em;
+            text-rendering: optimizeLegibility;
+            font-size: 18px;
+            line-height: 1.6;
+            white-space: pre-line;
+            border: 2px solid #ccc;
+            padding: 10px;
         }
 
-        select, button {
+        @font-face {
+            font-family: 'Almaghribi';
+            src: url('AALMAGHRIBI.ttf') format('truetype');
+            unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+        }
+
+        button {
             margin-top: 10px;
             font-size: 16px;
         }
-
-        .output-container canvas {
-            border: 2px solid #ccc; /* Add a border for visibility */
-            display: none; /* Initially hide the canvas */
-        }
-
-        .hidden {
-            display: none;
-        }
     </style>
-    <title>Almaghribi Text Editor</title>
+    <title>Éditeur de texte Almaghribi</title>
 </head>
 <body>
-    <h1>Almaghribi Text Editor</h1>
-    <textarea id="textInput" placeholder="Type or paste your text here..."></textarea>
-    <br>
-    <select id="downloadFormat">
-        <option value="image">تحميل النص على شكل صورة</option>
-        <option value="pdf">تحميل النص على شكل PDF</option>
-    </select>
+    <h1>Éditeur de texte Almaghribi</h1>
+    <textarea id="textInput" placeholder="Tapez ou collez votre texte ici..."></textarea>
     <br>
     <button onclick="displayText()">Afficher le texte</button>
-    <button onclick="downloadFile()">Télécharger le fichier</button>
-    <div class="output-container" id="outputContainer">
-        <canvas id="canvas" class="hidden"></canvas>
-        <textarea id="output" class="hidden" readonly></textarea>
-    </div>
+    <button onclick="downloadPDF()">Télécharger en PDF</button>
+    <br>
+    <textarea id="output" readonly></textarea>
 
     <script>
         function displayText() {
             const inputTextArea = document.getElementById('textInput');
-            const outputContainer = document.getElementById('outputContainer');
             const outputTextArea = document.getElementById('output');
 
             const textContent = inputTextArea.value.trim();
 
             if (textContent) {
-                // Apply custom font to the output textarea
                 outputTextArea.style.fontFamily = 'Almaghribi';
-
-                // Set direction to right-to-left
                 outputTextArea.setAttribute('dir', 'rtl');
-
-                // Display the input text in the output textarea
                 outputTextArea.value = textContent;
-
-                // Display the output container
-                outputContainer.style.display = 'block';
             } else {
                 alert('Veuillez entrer ou coller du texte.');
             }
         }
 
-        function downloadFile() {
-            const selectedFormat = document.getElementById('downloadFormat').value;
-            const outputTextArea = document.getElementById('output');
-            const outputContainer = document.getElementById('outputContainer');
-            const canvas = document.getElementById('canvas');
+        function downloadPDF() {
+            const outputTextArea = document.getElementById('output').value;
 
-            if (selectedFormat === 'image') {
-                // Convert the text to an image using html2canvas
-                html2canvas(outputTextArea).then(c => {
-                    // Show the canvas and hide the textarea
-                    canvas.classList.remove('hidden');
-                    outputTextArea.classList.add('hidden');
-
-                    // Replace the content of the canvas with the image data
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(c, 0, 0);
-
-                    // Convert the canvas to a data URL
-                    const imgData = canvas.toDataURL('image/png');
-
-                    // Create a link and trigger the download
-                    const link = document.createElement('a');
-                    link.href = imgData;
-                    link.download = 'text_as_image.png';
-                    link.click();
-                });
-            } else if (selectedFormat === 'pdf') {
-                // Show the textarea and hide the canvas
-                outputTextArea.classList.remove('hidden');
-                canvas.classList.add('hidden');
-
+            if (outputTextArea) {
                 // Create a PDF using jsPDF
                 const pdf = new jsPDF('p', 'mm', 'a4');
-                pdf.text(outputTextArea.value, 10, 10);
+                pdf.text(outputTextArea, 10, 10);
                 pdf.save('text_as_pdf.pdf');
             } else {
-                alert('Veuillez sélectionner un format de téléchargement valide.');
+                alert('Veuillez afficher le texte avant de télécharger.');
             }
         }
     </script>
