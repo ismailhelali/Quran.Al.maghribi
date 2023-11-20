@@ -35,9 +35,29 @@
             font-size: 16px;
         }
 
-        /* Hidden container for printing */
-        #printContainer {
+        /* Hidden during printing */
+        .no-print {
             display: none;
+        }
+
+        /* Visible during printing */
+        .print-only {
+            display: block;
+        }
+
+        /* @media print query */
+        @media print {
+            body {
+                text-align: right; /* Align text to the right for Arabic script */
+            }
+
+            .no-print {
+                display: none; /* Hide elements with class no-print during printing */
+            }
+
+            .print-only {
+                display: block; /* Show elements with class print-only during printing */
+            }
         }
     </style>
     <title>Éditeur de texte Almaghribi</title>
@@ -47,15 +67,14 @@
     <form id="downloadForm">
         <textarea id="textInput" name="textInput" placeholder="Tapez ou collez votre texte ici..."></textarea>
         <br>
-        <button type="button" onclick="displayText()">Afficher le texte</button>
+        <button type="button" onclick="displayText()" class="no-print">Afficher le texte</button>
         <br>
-        <textarea id="output" name="output" readonly></textarea>
+        <textarea id="output" name="output" readonly class="print-only"></textarea>
         <br>
-        <button type="button" onclick="printOutput()">Imprimer le texte en PDF</button>
+        <button type="button" onclick="printOutput()" class="no-print">Imprimer le texte en PDF</button>
     </form>
 
-    <!-- Hidden container for printing -->
-    <div id="printContainer"></div>
+
 
     <script type="text/javascript">
         function displayText() {
@@ -77,18 +96,9 @@
             const outputText = document.getElementById('output').value.trim();
 
             if (outputText) {
-                // Create a temporary div
-                const tempDiv = document.createElement('div');
-                tempDiv.style.fontFamily = 'Almaghribi';
-                tempDiv.setAttribute('dir', 'rtl');
-                tempDiv.innerHTML = outputText;
-
-                // Append the temporary div to the print container
                 const printContainer = document.getElementById('printContainer');
-                printContainer.innerHTML = ''; // Clear previous content
-                printContainer.appendChild(tempDiv);
+                printContainer.innerHTML = outputText;
 
-                // Trigger the print dialog for the hidden container
                 window.print();
             } else {
                 alert('Veuillez afficher le texte avant d\'imprimer en PDF.');
