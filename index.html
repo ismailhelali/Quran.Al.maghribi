@@ -45,25 +45,18 @@
 <body>
     <h1>Éditeur de texte Almaghribi</h1>
     <form id="downloadForm">
-
-        <!-- Hidden container for printing -->
-    <div id="printContainer">
-
-
         <textarea id="textInput" name="textInput" placeholder="Tapez ou collez votre texte ici..."></textarea>
         <br>
         <button type="button" onclick="displayText()">Afficher le texte</button>
-<br>
-                <button type="button" onclick="printOutput()">Imprimer le texte en PDF</button>
-
-    </div>
-
         <br>
         <textarea id="output" name="output" readonly></textarea>
         <br>
+        <button type="button" onclick="printOutput()">Imprimer le texte en PDF</button>
     </form>
 
-    
+    <!-- Hidden container for printing -->
+    <div id="printContainer"></div>
+
     <script type="text/javascript">
         function displayText() {
             const inputTextArea = document.getElementById('textInput');
@@ -84,9 +77,16 @@
             const outputText = document.getElementById('output').value.trim();
 
             if (outputText) {
-                // Create a hidden container
+                // Create a temporary div
+                const tempDiv = document.createElement('div');
+                tempDiv.style.fontFamily = 'Almaghribi';
+                tempDiv.setAttribute('dir', 'rtl');
+                tempDiv.innerHTML = outputText;
+
+                // Append the temporary div to the print container
                 const printContainer = document.getElementById('printContainer');
-                printContainer.innerText = outputText;
+                printContainer.innerHTML = ''; // Clear previous content
+                printContainer.appendChild(tempDiv);
 
                 // Trigger the print dialog for the hidden container
                 window.print();
