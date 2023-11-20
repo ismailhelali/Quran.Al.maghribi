@@ -15,7 +15,7 @@
             width: 80%;
             height: 200px;
             margin-bottom: 10px;
-            font-family: 'Almaghribi', Arial, sans-serif; /* Apply the custom font */
+            font-family: 'AALMAGHRIBI', Arial, sans-serif; /* Apply the custom font */
         }
     </style>
 </head>
@@ -41,14 +41,14 @@
                 const style = document.createElement('style');
                 style.textContent = `
                     @font-face {
-                        font-family: 'Almaghribi';
+                        font-family: 'AALMAGHRIBI';
                         src: url('AALMAGHRIBI.ttf'); /* Path to your font file */
                     }
                 `;
                 document.head.appendChild(style);
 
                 // Apply the custom font and set direction to right-to-left
-                outputTextArea.style.fontFamily = 'Almaghribi';
+                outputTextArea.style.fontFamily = 'AALMAGHRIBI';
                 outputTextArea.setAttribute('dir', 'rtl');
 
                 // Display the input text in the output textarea
