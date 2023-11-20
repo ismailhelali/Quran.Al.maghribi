@@ -1,63 +1,59 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Almaghribi Text Editor</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Almaghribi', cursive;
             text-align: center;
-            margin: 20px;
         }
 
         textarea {
             width: 80%;
             height: 200px;
-            margin-bottom: 10px;
-            font-family: 'AALMAGHRIBI', Arial, sans-serif; /* Apply the custom font */
-            letter-spacing: 0.1em; /* Adjust letter spacing as needed */
-            word-spacing: 0.2em; /* Adjust word spacing as needed */
-            text-rendering: optimizeLegibility; /* Improve font rendering */
+            margin: 20px;
+            font-family: 'Almaghribi', cursive; /* Apply the custom font to the textarea */
+            letter-spacing: 0.1em;
+            word-spacing: 0.2em;
+            text-rendering: optimizeLegibility;
+        }
+
+        @font-face {
+            font-family: 'Almaghribi';
+            src: url('AALMAGHRIBI.ttf') format('truetype');
+            /* Add additional formats if needed (e.g., woff, woff2) */
+            unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
         }
     </style>
+    <title>Almaghribi Text Editor</title>
 </head>
 <body>
     <h1>Almaghribi Text Editor</h1>
-    <label for="textInput">أدخل أو الصق النص الخاص بك:</label>
+    <label for="fileInput">Choose a Word document:</label>
+    <input type="file" id="fileInput" accept=".doc">
     <br>
-    <textarea id="textInput"></textarea>
-    <br>
-    <button onclick="applyCustomFont()">تطبيق الخط المخصص</button>
+    <button onclick="readAndDisplayDocument()">Read and Display Document</button>
     <br>
     <textarea id="output" readonly></textarea>
 
     <script>
-        function applyCustomFont() {
-            const inputTextArea = document.getElementById('textInput');
+        function readAndDisplayDocument() {
+            const fileInput = document.getElementById('fileInput');
             const outputTextArea = document.getElementById('output');
 
-            const textContent = inputTextArea.value.trim();
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const reader = new FileReader();
 
-            if (textContent) {
-                // Apply custom font
-                const style = document.createElement('style');
-                style.textContent = `
-                    @font-face {
-                        font-family: 'AALMAGHRIBI';
-                        src: url('AALMAGHRIBI.ttf'); /* Path to your font file */
-                    }
-                `;
-                document.head.appendChild(style);
+                reader.onload = function (e) {
+                    const content = e.target.result;
+                    outputTextArea.value = content;
+                };
 
-                // Apply the custom font and set direction to right-to-left
-                outputTextArea.style.fontFamily = 'AALMAGHRIBI';
-                outputTextArea.setAttribute('dir', 'rtl');
-
-                // Display the input text in the output textarea
-                outputTextArea.value = textContent;
+                reader.readAsText(file);
             } else {
-                alert('الرجاء إدخال أو لصق النص.');
+                alert('Please choose a Word document.');
             }
         }
     </script>
