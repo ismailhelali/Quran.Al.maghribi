@@ -73,22 +73,33 @@
             }
         }
     </style>
-    <title>Éditeur de texte Almaghribi</title>
+    <title>الخـط المغربــي المبســوط </title>
 </head>
 <body>
-    <h1 class="no-print">Éditeur de texte Almaghribi</h1>
+    <h1 class="no-print">الخـط المغربــي المبســوط</h1>
     <form id="downloadForm">
-        <textarea id="textInput" name="textInput" class="no-print" placeholder="Tapez ou collez votre texte ici..."></textarea>
+        <textarea id="textInput" name="textInput" class="no-print" placeholder="اكتب هنا "></textarea>
         <br>
-        <button type="button" class="no-print" onclick="displayText()">Afficher le texte</button>
+        <button type="button" class="no-print" onclick="displayText()">التاكيد</button>
         <br>
         <div id="output" name="output" class="print-only" readonly></div>
         <br>
+<<<<<<< HEAD
         <button type="button" class="no-print" onclick="printOutput()">Imprimer le texte en PDF</button>
+        <h3>: اختر الخط</h3>
+        <select name="font" id="font" class="no-print">
+            <option value="Almaghribi">Almaghribi</option>
+            <option value="Arial">Arial</option>
+        </select>
+=======
+        <button type="button" class="no-print" onclick="printOutput()">طبع النص</button>
+>>>>>>> 763c846b60f3eb73e783fd0ea2756464bbec69ec
     </form>
 
     <!-- Hidden container for printing -->
     <div class="print-only" id="printContainer"></div>
+    
+    <h2 class="no-print">الخـط المغربــي المبســوط لمؤسسة محمد السادس لنشر المصحف الشريف</h2>
 
     <script type="text/javascript">
         function displayText() {
