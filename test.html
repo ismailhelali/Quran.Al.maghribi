@@ -84,7 +84,7 @@
         <label for="textColor">اختر لون النص:</label>
         <input type="color" id="textColor" name="textColor" class="no-print">
         <br>
-        <button type="button" class="no-print" onclick="displayText()">التاكيد</button>
+        <button type="button" class="print-only" onclick="displayText()">التاكيد</button>
         <br>
         <div id="output" name="output" class="print-only" readonly></div>
         <br>
@@ -99,7 +99,7 @@
     </form>
 
     <!-- Hidden container for printing -->
-    <div class="print-only" id="printContainer"></div>
+    <div class="no-print" id="printContainer"></div>
     
     <h2 class="no-print">الخـط المغربــي المبســوط لمؤسسة محمد السادس لنشر المصحف الشريف</h2>
 
