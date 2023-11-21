@@ -86,7 +86,7 @@
         <br>
         <button type="button" class="no-print" onclick="displayText()">التاكيد</button>
         <br>
-        <div id="output" name="output" class="no-print" readonly></div>
+        <pre id="output" name="output" class="no-print"></pre>
         <br>
         
         <h3 class="no-print">: اختر الخط</h3>
@@ -118,29 +118,29 @@
                 outputTextArea.style.backgroundColor = bgColorInput.value;
                 outputTextArea.style.color = textColorInput.value;
                 outputTextArea.setAttribute('dir', 'rtl');
-                outputTextArea.value = textContent;
+                outputTextArea.textContent = textContent;
             } else {
                 alert('Veuillez entrer ou coller du texte.');
             }
         }
 
         function printOutput() {
-            const outputText = document.getElementById('output').value.trim();
+            const outputText = document.getElementById('output').textContent.trim();
 
             if (outputText) {
-                // Create a temporary div
-                const tempDiv = document.createElement('div');
-                tempDiv.className = 'print-only';
-                tempDiv.style.fontFamily = 'Almaghribi';
-                tempDiv.style.backgroundColor = document.getElementById('bgColor').value;
-                tempDiv.style.color = document.getElementById('textColor').value;
-                tempDiv.setAttribute('dir', 'rtl');
-                tempDiv.innerHTML = outputText;
+                // Create a temporary pre element
+                const tempPre = document.createElement('pre');
+                tempPre.className = 'print-only';
+                tempPre.style.fontFamily = 'Almaghribi';
+                tempPre.style.backgroundColor = document.getElementById('bgColor').value;
+                tempPre.style.color = document.getElementById('textColor').value;
+                tempPre.setAttribute('dir', 'rtl');
+                tempPre.textContent = outputText;
 
-                // Append the temporary div to the print container
+                // Append the temporary pre element to the print container
                 const printContainer = document.getElementById('printContainer');
                 printContainer.innerHTML = ''; // Clear previous content
-                printContainer.appendChild(tempDiv);
+                printContainer.appendChild(tempPre);
 
                 // Trigger the print dialog for the hidden container
                 window.print();
