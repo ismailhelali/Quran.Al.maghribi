@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Almaghribi', cursive;
+            text-align: center;
+        }
+
+        textarea {
+            width: 80%;
+            height: 200px;
+            margin: 20px;
+            font-family: 'Almaghribi', cursive;
+            letter-spacing: 0.05em;
+            word-spacing: 0.15em;
+            text-rendering: optimizeLegibility;
+            font-size: 28px;
+            line-height: 1.6;
+            white-space: pre-line;
+            border: 2px solid #ccc;
+            padding: 10px;
+        }
+
+        #output {
+            height: 100%;
+            font-size: 48px;
+        }
+
+        @font-face {
+            font-family: 'Almaghribi';
+            src: url('AALMAGHRIBI.ttf') format('truetype');
+            unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+        }
+
+        button {
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        /* @media print query */
+        @media print {
+            body {
+                text-align: right; /* Align text to the right for Arabic script */
+            }
+
+            @page {
+                size: auto; /* Use 'auto' to set the size based on the content */
+                margin: 20px; /* Set the margin to 0 to remove default margins */
+            }
+
+            body::before {
+                content: ""; /* Empty content to hide header */
+                display: none; /* Hide header */
+            }
+
+            body::after {
+                content: ""; /* Empty content to hide footer */
+                display: none; /* Hide footer */
+            }
+
+            .no-print {
+                display: none; /* Hide elements with class no-print during printing */
+            }
+
+            .print-only {
+                display: block; /* Show elements with class print-only during printing */
+                font-size: 48px;
+            }
+        }
+    </style>
+    <title>الخـط المغربــي المبســوط </title>
+</head>
+<body>
+    <h1 class="no-print">الخـط المغربــي المبســوط</h1>
+    <form id="downloadForm">
+        <textarea id="textInput" name="textInput" class="no-print" placeholder="اكتب هنا "></textarea>
+        <br>
+        <label for="bgColor">اختر لون الخلفية:</label>
+        <input type="color" id="bgColor" name="bgColor" class="no-print">
+        <br>
+        <label for="textColor">اختر لون النص:</label>
+        <input type="color" id="textColor" name="textColor" class="no-print">
+        <br>
+        <button type="button" class="no-print" onclick="displayText()">التاكيد</button>
+        <br>
+        <div id="output" name="output" class="print-only" readonly></div>
+        <br>
+        
+        <h3 class="no-print">: اختر الخط</h3>
+        <select name="font" id="font" class="no-print">
+            <option value="Almaghribi">Almaghribi</option>
+            <option value="Arial">Arial</option>
+        </select>
+
+        <button type="button" class="no-print" onclick="printOutput()">طبع النص</button>
+    </form>
+
+    <!-- Hidden container for printing -->
+    <div class="print-only" id="printContainer"></div>
+    
+    <h2 class="no-print">الخـط المغربــي المبســوط لمؤسسة محمد السادس لنشر المصحف الشريف</h2>
+
+    <script type="text/javascript">
+        function displayText() {
+            const inputTextArea = document.getElementById('textInput');
+            const outputTextArea = document.getElementById('output');
+            const bgColorInput = document.getElementById('bgColor');
+            const textColorInput = document.getElementById('textColor');
+
+            const textContent = inputTextArea.value.trim();
+
+            if (textContent) {
+                outputTextArea.style.fontFamily = 'Almaghribi';
+                outputTextArea.style.backgroundColor = bgColorInput.value;
+                outputTextArea.style.color = textColorInput.value;
+                outputTextArea.setAttribute('dir', 'rtl');
+                outputTextArea.value = textContent;
+            } else {
+                alert('Veuillez entrer ou coller du texte.');
+            }
+        }
+
+        function printOutput() {
+            const outputText = document.getElementById('output').value.trim();
+
+            if (outputText) {
+                // Create a temporary div
+                const tempDiv = document.createElement('div');
+                tempDiv.style.fontFamily = 'Almaghribi';
+                tempDiv.style.backgroundColor = document.getElementById('bgColor').value;
+                tempDiv.style.color = document.getElementById('textColor').value;
+                tempDiv.setAttribute('dir', 'rtl');
+                tempDiv.innerHTML = outputText;
+
+                // Append the temporary div to the print container
+                const printContainer = document.getElementById('printContainer');
+                printContainer.innerHTML = ''; // Clear previous content
+                printContainer.appendChild(tempDiv);
+
+                // Trigger the print dialog for the hidden container
+                window.print();
+            } else {
+                alert('Veuillez afficher le texte avant d\'imprimer en PDF.');
+            }
+        }
+    </script>
+</body>
+</html>
