@@ -78,15 +78,15 @@
     <form id="downloadForm">
         <textarea id="textInput" name="textInput" class="no-print" placeholder="اكتب هنا "></textarea>
         <br>
-        <label for="bgColor">اختر لون الخلفية:</label>
+        <label for="bgColor" class="no-print">اختر لون الخلفية:</label>
         <input type="color" id="bgColor" name="bgColor" class="no-print">
         <br>
-        <label for="textColor">اختر لون النص:</label>
+        <label  for="textColor" class="no-print">اختر لون النص:</label>
         <input type="color" id="textColor" name="textColor" class="no-print">
         <br>
         <button type="button" class="no-print" onclick="displayText()">التاكيد</button>
         <br>
-        <div id="output" name="output" class="print-only" readonly></div>
+        <div id="output" name="output" class="no-print" readonly></div>
         <br>
         
         <h3 class="no-print">: اختر الخط</h3>
@@ -99,7 +99,7 @@
     </form>
 
     <!-- Hidden container for printing -->
-    <div class="no-print" id="printContainer"></div>
+    <div class="print-only" id="printContainer"></div>
     
     <h2 class="no-print">الخـط المغربــي المبســوط لمؤسسة محمد السادس لنشر المصحف الشريف</h2>
 
@@ -113,6 +113,7 @@
             const textContent = inputTextArea.value.trim();
 
             if (textContent) {
+                outputTextArea.className = 'print-only';
                 outputTextArea.style.fontFamily = 'Almaghribi';
                 outputTextArea.style.backgroundColor = bgColorInput.value;
                 outputTextArea.style.color = textColorInput.value;
