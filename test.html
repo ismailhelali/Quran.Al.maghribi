@@ -42,6 +42,12 @@
 
         /* @media print query */
         @media print {
+
+            body {
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            
             body {
                 text-align: right; /* Align text to the right for Arabic script */
             }
