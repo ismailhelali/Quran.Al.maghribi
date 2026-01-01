@@ -64,28 +64,18 @@
         .group-block {
             page-break-after: always;
             margin: 40px auto;
-            padding: 30px;
+            padding: 50px;
             background: #fff;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            text-align: right; /* محاذاة لليمين */
+            direction: rtl;
+            text-align: right;
         }
         .training-line {
             font-size: 48px;
-            line-height: 2.2;
-            color: #ddd;
-            position: relative;
+            line-height: 2.4;
             margin: 20px 0;
-            text-align: right;
-        }
-        .overlay-text {
-            font-size: 48px;
-            line-height: 2.2;
-            color: #00000020;
-            position: absolute;
-            top: 0;
-            right: 0;
-            opacity: 0.15;
-            pointer-events: none;
+            direction: rtl;
+            unicode-bidi: embed;
             text-align: right;
         }
         .line-number {
@@ -93,9 +83,31 @@
             width: 50px;
             font-size: 28px;
             color: #999;
+            font-family: sans-serif;
         }
         .leader {
-            margin-right: 8px;
+            margin-left: 12px;
+            color: #ccc;
+            letter-spacing: 4px;
+        }
+        .dotted-phrase {
+            color: #ddd;
+            font-family: 'Almaghribi';
+        }
+        .solid-phrase {
+            color: black;                  /* نص أسود صلب */
+            font-family: 'Almaghribi';
+            opacity: 0.18;                 /* شفاف قليلاً للمقارنة دون إزعاج */
+            position: absolute;
+            top: 0;
+            right: 0;
+            pointer-events: none;
+            direction: rtl;
+            unicode-bidi: embed;
+        }
+        .line-wrapper {
+            position: relative;
+            display: block;
         }
         @font-face {
             font-family: 'Almaghribi';
@@ -114,7 +126,7 @@
                 top: 0;
                 width: 100%;
                 margin: 0;
-                padding: 40px;
+                padding: 50px;
             }
             .preview, button, .instructions {
                 display: none;
@@ -131,7 +143,7 @@
         <ul style="text-align:right; direction:rtl;">
             <li>اكتب العبارات مفصولة بـ "-" داخل سطر واحد.</li>
             <li>استخدم زر "إضافة سطر جديد" للفصل بين المجموعات (كل مجموعة = صفحة تدريب).</li>
-            <li>في الـ PDF والمعاينة: محاذاة لليمين، نقاط قائدة (leader dots) أمام كل عبارة، حجم ملف أخف.</li>
+            <li>النص الخفيف للتتبع (رمادي فاتح)، والنص الأسود الشفاف قليلاً للمقارنة.</li>
         </ul>
     </div>
 
@@ -191,10 +203,13 @@
 
                 const title = document.createElement('h3');
                 title.textContent = `تمرين المجموعة ${groupIndex + 1}`;
-                title.style.marginBottom = '30px';
+                title.style.marginBottom = '40px';
                 groupBlock.appendChild(title);
 
                 for (let i = 0; i < 10; i++) {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'line-wrapper';
+
                     const lineDiv = document.createElement('div');
                     lineDiv.className = 'training-line';
 
@@ -203,27 +218,33 @@
                     number.textContent = (i + 1) + '. ';
                     lineDiv.appendChild(number);
 
-                    phrases.forEach(phrase => {
+                    phrases.forEach((phrase, idx) => {
+                        if (idx > 0) {
+                            const space = document.createElement('span');
+                            space.textContent = '     ';
+                            lineDiv.appendChild(space);
+                        }
+
                         const leader = document.createElement('span');
                         leader.className = 'leader';
-                        leader.textContent = ' .......... ';
-                        leader.style.color = '#ddd';
+                        leader.textContent = '..........';
                         lineDiv.appendChild(leader);
 
                         const dotted = document.createElement('span');
-                        dotted.textContent = phrase + '     ';
-                        dotted.style.color = '#ddd';
-                        dotted.style.fontFamily = 'Almaghribi';
+                        dotted.className = 'dotted-phrase';
+                        dotted.textContent = phrase;
                         lineDiv.appendChild(dotted);
 
-                        const overlay = document.createElement('span');
-                        overlay.className = 'overlay-text';
-                        overlay.textContent = ' .......... ' + phrase + '     ';
-                        overlay.style.fontFamily = 'Almaghribi';
-                        lineDiv.appendChild(overlay);
+                        // النص الأسود الشفاف (للمقارنة)
+                        const solid = document.createElement('span');
+                        solid.className = 'solid-phrase';
+                        solid.textContent = '.......... ' + phrase;
+                        if (idx > 0) solid.textContent = '     ' + solid.textContent;
+                        wrapper.appendChild(solid);
                     });
 
-                    groupBlock.appendChild(lineDiv);
+                    wrapper.appendChild(lineDiv);
+                    groupBlock.appendChild(wrapper);
                 }
 
                 container.appendChild(groupBlock);
@@ -237,7 +258,6 @@
 
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF('p', 'mm', 'a4');
-            const pageHeight = pdf.internal.pageSize.getHeight();
 
             const groupBlocks = document.querySelectorAll('.group-block');
 
@@ -245,17 +265,16 @@
                 if (g > 0) pdf.addPage();
 
                 const canvas = await html2canvas(groupBlocks[g], {
-                    scale: 1.8,               // انخفاض الـ scale لتقليل الدقة وحجم الملف
+                    scale: 1.8,
                     useCORS: true,
                     backgroundColor: '#ffffff',
                     logging: false
                 });
 
-                const imgData = canvas.toDataURL('image/jpeg', 0.75); // JPEG بجودة 75% لتقليل الحجم بشكل كبير
+                const imgData = canvas.toDataURL('image/jpeg', 0.75);
                 const imgWidth = 190;
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-                const positionY = (pageHeight - imgHeight) / 2;
+                const positionY = (pdf.internal.pageSize.getHeight() - imgHeight) / 2;
 
                 pdf.addImage(imgData, 'JPEG', 10, positionY > 10 ? positionY : 10, imgWidth, imgHeight);
             }
@@ -265,11 +284,11 @@
     </script>
 
     <p style="margin-top:50px; font-size:18px;">
-        <strong>التحديثات:</strong><br>
-        - محاذاة كاملة لليمين في المعاينة والـ PDF.<br>
-        - نقاط قائدة (...........) أمام كل عبارة في كل سطر.<br>
-        - حجم PDF أخف بكثير باستخدام JPEG بدلاً من PNG وتقليل الـ scale وجودة الصورة.<br>
-        جرب الآن، الملف سيكون أصغر حجماً وجودة كافية للطباعة.
+        <strong>التحديثات الأخيرة:</strong><br>
+        - محاذاة عربية كاملة (من اليمين إلى اليسار) مع direction: rtl و unicode-bidi.<br>
+        - النص المرجعي الآن <strong>أسود صلب</strong> وشفاف قليلاً ليسهل المقارنة دون إخفاء الكتابة.<br>
+        - النقاط القائدة والمسافات محافظة على الترتيب العربي الصحيح.<br>
+        جاهز للطباعة والتدريب!
     </p>
 </body>
 </html>
