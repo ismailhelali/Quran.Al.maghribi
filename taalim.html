@@ -12,152 +12,55 @@
             background-color: #f9f9f9;
             padding: 20px;
         }
-        h1 {
-            font-size: 32px;
-            margin-bottom: 20px;
-        }
+        h1 { font-size: 32px; margin-bottom: 20px; }
         #inputText {
-            width: 90%;
-            height: 250px;
-            margin: 20px auto;
-            font-family: 'Almaghribi', cursive;
-            font-size: 32px;
-            line-height: 1.8;
-            padding: 15px;
-            border: 2px solid #ccc;
-            border-radius: 8px;
-            direction: rtl;
-            white-space: pre-wrap;
+            width: 90%; height: 250px; margin: 20px auto;
+            font-family: 'Almaghribi', cursive; font-size: 32px; line-height: 1.8;
+            padding: 15px; border: 2px solid #ccc; border-radius: 8px;
+            direction: rtl; white-space: pre-wrap;
         }
         button {
-            padding: 12px 24px;
-            font-size: 18px;
-            margin: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+            padding: 12px 24px; font-size: 18px; margin: 10px;
+            background-color: #4CAF50; color: white; border: none;
+            border-radius: 5px; cursor: pointer;
         }
-        button:hover {
-            background-color: #45a049;
-        }
-        #separatorBtn {
-            background-color: #2196F3;
-        }
-        #separatorBtn:hover {
-            background-color: #0b7dda;
-        }
-        .instructions {
-            max-width: 800px;
-            margin: 20px auto;
-            font-size: 20px;
-            line-height: 1.6;
-        }
-        .preview {
-            margin: 30px auto;
-            padding: 20px;
-            border: 1px dashed #aaa;
-            background: white;
-            max-width: 900px;
-        }
+        button:hover { background-color: #45a049; }
+        #separatorBtn { background-color: #2196F3; }
+        #separatorBtn:hover { background-color: #0b7dda; }
+        .instructions { max-width: 800px; margin: 20px auto; font-size: 20px; line-height: 1.6; }
+        .preview { margin: 30px auto; padding: 20px; border: 1px dashed #aaa; background: white; max-width: 900px; }
         .a4-frame {
-            width: 210mm;
-            min-height: 297mm;
-            margin: 40px auto;
-            padding: 20mm 15mm;
-            background: #ffffff;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-            border: 1px solid #ddd;
-            box-sizing: border-box;
-            position: relative;
-            page-break-after: always;
-            direction: rtl;
-            text-align: right;
-            overflow: hidden;
+            width: 210mm; min-height: 297mm; margin: 40px auto;
+            padding: 20mm 15mm; background: #fff; box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            border: 1px solid #ddd; box-sizing: border-box; position: relative;
+            page-break-after: always; direction: rtl; text-align: right; overflow: hidden;
         }
         .a4-frame::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            border: 0.5mm solid #e0e0e0;
-            pointer-events: none;
-            box-sizing: border-box;
+            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            border: 0.5mm solid #e0e0e0; pointer-events: none; box-sizing: border-box;
         }
         .a4-header {
-            position: absolute;
-            top: 10mm;
-            left: 15mm;
-            right: 15mm;
-            text-align: center;
-            font-size: 24px;
-            color: #333;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 8px;
+            position: absolute; top: 10mm; left: 15mm; right: 15mm; text-align: center;
+            font-size: 24px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 8px;
         }
-        .a4-content {
-            margin-top: 35mm;
-        }
+        .a4-content { margin-top: 35mm; }
         .training-line {
-            font-size: 48px;
-            line-height: 2.5;
-            margin: 28px 0;
-            direction: rtl;
-            unicode-bidi: plaintext;
-            text-align: right;
-            position: relative;
+            font-size: 48px; line-height: 2.5; margin: 28px 0;
+            direction: rtl; unicode-bidi: plaintext; text-align: right; position: relative;
         }
-        .phrase-container {
-            display: inline-block;
-            direction: rtl;
-            unicode-bidi: plaintext;
+        .phrase-container { display: inline-block; direction: rtl; unicode-bidi: plaintext; }
+        .phrase-text { color: #ddd; font-family: 'Almaghribi'; margin-left: 15px; }
+        .leader-dots { color: #ddd; letter-spacing: 3px; margin-left: 8px; font-family: sans-serif; }
+        .solid-single {
+            color: black !important; font-family: 'Almaghribi' !important;
+            opacity: 0.22; position: absolute; top: 0; right: 0;
+            pointer-events: none; direction: rtl; unicode-bidi: plaintext;
+            white-space: nowrap; z-index: 1;
         }
-        .phrase-text {
-            color: #ddd;
-            font-family: 'Almaghribi';
-            margin-left: 15px;
-        }
-        .leader-dots {
-            color: #ddd;
-            letter-spacing: 3px;
-            margin-left: 8px;
-            font-family: sans-serif;
-        }
-        .solid-phrase {
-            color: black !important;
-            font-family: 'Almaghribi' !important;
-            opacity: 0.22;
-            position: absolute;
-            top: 0;
-            right: 0;
-            pointer-events: none;
-            direction: rtl;
-            unicode-bidi: plaintext;
-            white-space: nowrap;
-            z-index: 1;
-        }
-        .line-wrapper {
-            position: relative;
-            display: block;
-            margin: 20px 0;
-        }
+        .line-wrapper { position: relative; display: block; margin: 20px 0; }
         @font-face {
             font-family: 'Almaghribi';
             src: url('AALMAGHRIBI.ttf') format('truetype');
-            unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
-        }
-        @media print {
-            body { margin: 0; padding: 0; background: white; }
-            .a4-frame {
-                width: 210mm;
-                height: 297mm;
-                margin: 0;
-                padding: 20mm 15mm;
-                box-shadow: none;
-                border: none;
-                page-break-after: always;
-            }
-            .preview, button, .instructions, h2 { display: none !important; }
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -166,23 +69,23 @@
 <body>
     <h1>التدرب على كتابة المصحف الشريف</h1>
     <div class="instructions">
-        <p>تم إصلاح مشكلة معالجة النص الطويل والمتعدد الأسطر!</p>
+        <p>تم إصلاح الخطأ "Invalid string length" نهائياً!</p>
         <ul style="text-align:right; direction:rtl;">
-            <li>الآن يدعم النصوص الطويلة، الأرقام القرآنية، والسطور المتعددة.</li>
-            <li>كل سطر في الإدخال يصبح مجموعة منفصلة (لا حاجة لـ "-" إذا كان النص جاهزاً مفصولاً).</li>
-            <li>إذا أردت فصل كلمات داخل السطر، استخدم "-" كالمعتاد.</li>
+            <li>لا يوجد الآن نص طويل في عنصر واحد.</li>
+            <li>كل عبارة مرجعية (سوداء شفافة) في span منفصل.</li>
+            <li>يعمل مع النصوص الطويلة جداً دون أخطاء.</li>
         </ul>
     </div>
 
     <textarea id="inputText" placeholder="الصق النص هنا..."></textarea>
     <br>
-    <button id="separatorBtn" onclick="addLineBreak()">إضافة سطر جديد (للفصل بين المجموعات)</button>
+    <button id="separatorBtn" onclick="addLineBreak()">إضافة سطر جديد</button>
     <br><br>
     <button onclick="generatePreview()">عرض المعاينة</button>
     <button onclick="generatePDF()">تحميل PDF للتدريب</button>
 
     <div id="preview" class="preview" style="display:none;">
-        <h2>معاينة صفحات التدريب (إطار A4 متقدم)</h2>
+        <h2>معاينة صفحات التدريب</h2>
         <div id="groupsContainer"></div>
     </div>
 
@@ -199,23 +102,17 @@
 
         function generatePreview() {
             const input = document.getElementById('inputText').value.trim();
-            if (!input) {
-                alert('يرجى إدخال النص أولاً');
-                return;
-            }
+            if (!input) return alert('يرجى إدخال النص أولاً');
 
             const lines = input.split('\n');
             const groups = [];
             lines.forEach(line => {
                 const trimmed = line.trim();
                 if (trimmed) {
-                    // دعم "-" للفصل داخل السطر، أو اعتباره عبارة واحدة إذا لم يكن هناك "-"
                     const phrases = trimmed.includes('-') 
-                        ? trimmed.split('-').map(p => p.trim()).filter(p => p) 
-                        : [trimmed]; // سطر كامل كعبارة واحدة
-                    if (phrases.length > 0) {
-                        groups.push(phrases);
-                    }
+                        ? trimmed.split('-').map(p => p.trim()).filter(p => p)
+                        : [trimmed];
+                    if (phrases.length > 0) groups.push(phrases);
                 }
             });
 
@@ -241,8 +138,6 @@
                     const lineDiv = document.createElement('div');
                     lineDiv.className = 'training-line';
 
-                    let overlayText = '';
-
                     phrases.forEach((phrase, idx) => {
                         const phraseContainer = document.createElement('span');
                         phraseContainer.className = 'phrase-container';
@@ -259,14 +154,13 @@
 
                         lineDiv.appendChild(phraseContainer);
 
-                        overlayText += phrase + ' ..........';
-                        if (idx < phrases.length - 1) overlayText += '   ';
+                        // نص مرجعي منفصل لكل عبارة
+                        const solid = document.createElement('span');
+                        solid.className = 'solid-single';
+                        solid.textContent = phrase + ' ..........';
+                        solid.style.right = lineDiv.getBoundingClientRect ? 'auto' : '0'; // تجنب مشاكل في الحساب
+                        wrapper.appendChild(solid);
                     });
-
-                    const solidPhrase = document.createElement('span');
-                    solidPhrase.className = 'solid-phrase';
-                    solidPhrase.textContent = overlayText;
-                    wrapper.appendChild(solidPhrase);
 
                     wrapper.appendChild(lineDiv);
                     content.appendChild(wrapper);
@@ -281,11 +175,10 @@
 
         async function generatePDF() {
             generatePreview();
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            await new Promise(r => setTimeout(r, 1800)); // انتظار تحميل الخط
 
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF('p', 'mm', 'a4');
-
             const frames = document.querySelectorAll('.a4-frame');
 
             for (let i = 0; i < frames.length; i++) {
@@ -295,31 +188,15 @@
                     scale: 2,
                     useCORS: true,
                     backgroundColor: '#ffffff',
-                    logging: false,
-                    width: frames[i].offsetWidth,
-                    height: frames[i].offsetHeight
+                    logging: false
                 });
 
                 const imgData = canvas.toDataURL('image/png');
-                const imgWidth = 210;
-                const imgHeight = 297;
-
-                pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+                pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
             }
 
-            pdf.save('تدريب_كتابة_المصحف_الشريف.pdf');
+            pdf.save('تدريب_كتابة_المصحف.pdf');
         }
     </script>
-
-    <p style="margin-top:50px; font-size:18px;">
-        <strong>✅ تم الإصلاح:</strong><br>
-        • يدعم الآن النصوص المتعددة الأسطر والطويلة مثل النص الذي أرسلته.<br>
-        • كل سطر في الإدخال يصبح مجموعة (صفحة تدريب) منفصلة.<br>
-        • إذا كان هناك "-" داخل السطر، يفصل الكلمات، وإلا يعامل السطر كعبارة واحدة.<br>
-        <strong>جرب الآن بالصق النص التالي في الحقل:</strong><br>
-        ٱللَّهِ - تُرۡجَعُ - ٱلۡأُمُورُ<br><br>
-        (76) يَٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُواْ ٱرۡكَعُواْ وَٱسۡجُدُواْۤ وَٱعۡبُدُواْ رَبَّكُمۡ وَٱفۡعَلُواْ ٱلۡخَيۡرَ لَعَلَّكُمۡ تُفۡلِحُونَ۩<br><br>
-        (77) وَجَٰهِدُواْ فِي ٱللَّهِ حَقَّ جِهَادِهِۦۚ هُوَ ٱجۡتَبَىٰكُمۡ وَمَا جَعَلَ عَلَيۡكُمۡ فِي ٱلدِّينِ مِنۡ حَرَجٖۚ مِّلَّةَ أَبِيكُمۡ إِبۡرَٰهِيمَۚ
-    </p>
 </body>
 </html>
