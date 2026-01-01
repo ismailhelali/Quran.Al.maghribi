@@ -16,9 +16,9 @@
             font-size: 32px;
             margin-bottom: 20px;
         }
-        textarea {
+        #inputText {
             width: 90%;
-            height: 200px;
+            height: 250px;
             margin: 20px auto;
             font-family: 'Almaghribi', cursive;
             font-size: 32px;
@@ -27,6 +27,7 @@
             border: 2px solid #ccc;
             border-radius: 8px;
             direction: rtl;
+            white-space: pre-wrap;
         }
         button {
             padding: 12px 24px;
@@ -41,6 +42,12 @@
         button:hover {
             background-color: #45a049;
         }
+        #separatorBtn {
+            background-color: #2196F3;
+        }
+        #separatorBtn:hover {
+            background-color: #0b7dda;
+        }
         .instructions {
             max-width: 800px;
             margin: 20px auto;
@@ -52,40 +59,37 @@
             padding: 20px;
             border: 1px dashed #aaa;
             background: white;
-            max-width: 800px;
+            max-width: 900px;
         }
-        .word-block {
-            display: inline-block;
-            margin: 30px;
-            padding: 40px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+        .group-block {
+            page-break-after: always; /* كل مجموعة صفحة منفصلة عند الطباعة */
+            margin: 40px auto;
+            padding: 30px;
             background: #fff;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: relative;
-            width: 600px;
-            height: 200px;
         }
-        .dotted-line {
-            font-size: 56px;
+        .training-line {
+            font-size: 48px;
+            line-height: 2.2;
             color: #ddd;
-            line-height: 1.8;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100%;
+            position: relative;
+            margin: 20px 0;
         }
         .overlay-text {
-            font-size: 56px;
-            color: #00000022; /* شفاف جداً رمادي فاتح */
-            line-height: 1.8;
+            font-size: 48px;
+            line-height: 2.2;
+            color: #00000020;
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
+            top: 0;
+            right: 0;
             opacity: 0.15;
+            pointer-events: none;
+        }
+        .line-number {
+            display: inline-block;
+            width: 50px;
+            font-size: 28px;
+            color: #999;
         }
         @font-face {
             font-family: 'Almaghribi';
@@ -95,15 +99,19 @@
             body * {
                 visibility: hidden;
             }
-            .word-block, .word-block * {
+            .group-block, .group-block * {
                 visibility: visible;
             }
-            .word-block {
+            .group-block {
                 position: absolute;
                 left: 0;
                 top: 0;
                 width: 100%;
-                page-break-after: always;
+                margin: 0;
+                padding: 20px;
+            }
+            .preview, button, .instructions {
+                display: none;
             }
         }
     </style>
@@ -113,23 +121,38 @@
 <body>
     <h1>التدرب على كتابة المصحف الشريف</h1>
     <div class="instructions">
-        <p>أدخل النص القرآني مع علامات "-" لفصل الكلمات أو العبارات (مثال: يَٰٓأَيُّهَا -ٱلَّذِينَ -ءَامَنُواْ).</p>
-        <p>سيظهر لك معاينة لكل جزء: خطوط نقاط خفيفة للتتبع، مع النص الشفاف فوقه للمقارنة.</p>
-        <p>يمكنك طباعة المعاينة مباشرة (Ctrl+P) أو تحميل PDF عالي الجودة.</p>
+        <p>الطريقة الجديدة:</p>
+        <ul style="text-align:right; direction:rtl;">
+            <li>اكتب العبارات المراد تدريب عليها مفصولة بـ "-" داخل سطر واحد (مثال: يَٰٓأَيُّهَا -ٱلَّذِينَ -ءَامَنُواْ).</li>
+            <li>استخدم زر "إضافة سطر جديد" للفصل بين <strong>المجموعات</strong> (كل مجموعة ستكون صفحة منفصلة في التمرين).</li>
+            <li>كل مجموعة ستظهر في صفحتها: عدة أسطر لإعادة الكتابة، مع نقاط خفيفة أمام كل عبارة والنص الشفاف للمقارنة.</li>
+        </ul>
     </div>
 
-    <textarea id="inputText" placeholder="أدخل النص هنا مع علامات - للفصل..."></textarea>
+    <textarea id="inputText" placeholder="أدخل النص هنا..."></textarea>
     <br>
+    <button id="separatorBtn" onclick="addLineBreak()">إضافة سطر جديد (للفصل بين المجموعات)</button>
+    <br><br>
     <button onclick="generatePreview()">عرض المعاينة</button>
     <button onclick="generatePDF()">تحميل PDF للتدريب</button>
     <button onclick="window.print()">طبع المعاينة</button>
 
     <div id="preview" class="preview" style="display:none;">
-        <h2>معاينة صفحات التدريب (كل كلمة صفحة منفصلة)</h2>
-        <div id="wordsContainer"></div>
+        <h2>معاينة صفحات التدريب</h2>
+        <div id="groupsContainer"></div>
     </div>
 
     <script>
+        function addLineBreak() {
+            const textarea = document.getElementById('inputText');
+            const cursorPos = textarea.selectionStart;
+            const textBefore = textarea.value.substring(0, cursorPos);
+            const textAfter = textarea.value.substring(cursorPos);
+            textarea.value = textBefore + '\n\n' + textAfter;
+            textarea.focus();
+            textarea.selectionStart = textarea.selectionEnd = cursorPos + 2;
+        }
+
         function generatePreview() {
             const input = document.getElementById('inputText').value.trim();
             if (!input) {
@@ -137,64 +160,106 @@
                 return;
             }
 
-            const parts = input.split('-').map(p => p.trim()).filter(p => p.length > 0);
-            const container = document.getElementById('wordsContainer');
+            const lines = input.split('\n');
+            const groups = [];
+            let currentGroup = [];
+
+            lines.forEach(line => {
+                const trimmed = line.trim();
+                if (trimmed === '' && currentGroup.length > 0) {
+                    groups.push(currentGroup);
+                    currentGroup = [];
+                } else if (trimmed) {
+                    const phrases = trimmed.split('-').map(p => p.trim()).filter(p => p);
+                    currentGroup = currentGroup.concat(phrases);
+                }
+            });
+            if (currentGroup.length > 0) groups.push(currentGroup);
+
+            const container = document.getElementById('groupsContainer');
             container.innerHTML = '';
 
-            parts.forEach(word => {
-                const block = document.createElement('div');
-                block.className = 'word-block';
+            groups.forEach((phrases, groupIndex) => {
+                const groupBlock = document.createElement('div');
+                groupBlock.className = 'group-block';
 
-                const dotted = document.createElement('div');
-                dotted.className = 'dotted-line';
-                dotted.textContent = word;
-                dotted.style.fontFamily = 'Almaghribi';
+                // عنوان المجموعة (اختياري)
+                const title = document.createElement('h3');
+                title.textContent = `تمرين المجموعة ${groupIndex + 1}`;
+                title.style.marginBottom = '30px';
+                groupBlock.appendChild(title);
 
-                const overlay = document.createElement('div');
-                overlay.className = 'overlay-text';
-                overlay.textContent = word;
-                overlay.style.fontFamily = 'Almaghribi';
+                // 8-10 أسطر لإعادة الكتابة
+                for (let i = 0; i < 10; i++) {
+                    const lineDiv = document.createElement('div');
+                    lineDiv.className = 'training-line';
 
-                block.appendChild(dotted);
-                block.appendChild(overlay);
-                container.appendChild(block);
+                    const number = document.createElement('span');
+                    number.className = 'line-number';
+                    number.textContent = (i + 1) + '. ';
+                    lineDiv.appendChild(number);
+
+                    phrases.forEach(phrase => {
+                        const dotted = document.createElement('span');
+                        dotted.textContent = phrase + '   ';
+                        dotted.style.color = '#ddd';
+                        dotted.style.fontFamily = 'Almaghribi';
+                        lineDiv.appendChild(dotted);
+
+                        const overlay = document.createElement('span');
+                        overlay.className = 'overlay-text';
+                        overlay.textContent = phrase + '   ';
+                        overlay.style.fontFamily = 'Almaghribi';
+                        lineDiv.appendChild(overlay);
+                    });
+
+                    groupBlock.appendChild(lineDiv);
+                }
+
+                container.appendChild(groupBlock);
             });
 
             document.getElementById('preview').style.display = 'block';
         }
 
         async function generatePDF() {
-            await generatePreview(); // تأكيد توليد المعاينة
+            await generatePreview();
 
             const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF('l', 'mm', 'a4'); // landscape لمساحة أكبر
-            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pdf = new jsPDF('p', 'mm', 'a4'); // عمودي ليتناسب مع الأسطر
             const pageHeight = pdf.internal.pageSize.getHeight();
 
-            const blocks = document.querySelectorAll('.word-block');
+            const groupBlocks = document.querySelectorAll('.group-block');
 
-            for (let i = 0; i < blocks.length; i++) {
-                if (i > 0) pdf.addPage();
+            for (let g = 0; g < groupBlocks.length; g++) {
+                if (g > 0) pdf.addPage();
 
-                const canvas = await html2canvas(blocks[i], {
-                    scale: 3, // جودة عالية
+                const canvas = await html2canvas(groupBlocks[g], {
+                    scale: 2.5,
                     backgroundColor: '#ffffff',
-                    logging: false
+                    logging: false,
+                    height: groupBlocks[g].offsetHeight + 100 // لضمان التقاط الكامل
                 });
 
                 const imgData = canvas.toDataURL('image/png');
-                const imgHeight = (canvas.height * pageWidth) / canvas.width;
+                const imgHeight = (canvas.height * 190) / canvas.width; // عرض الصفحة تقريباً
 
                 let heightLeft = imgHeight;
-                let position = 0;
+                let position = 10;
 
-                pdf.addImage(imgData, 'PNG', 0, position, pageWidth, imgHeight);
+                pdf.addImage(imgData, 'PNG', 10, position, 190, imgHeight);
             }
 
-            pdf.save('تدريب_كتابة_المصحف.pdf');
+            pdf.save('تدريب_كتابة_المصحف_مجموعات.pdf');
         }
     </script>
 
-   
+    <p style="margin-top:50px; font-size:18px;">
+        <strong>الآن:</strong><br>
+        - كل مجموعة (مفصولة بسطر فارغ في الإدخال) تصبح صفحة تدريب منفصلة.<br>
+        - في كل صفحة: 10 أسطر لإعادة كتابة العبارات نفسها.<br>
+        - أمام كل سطر رقم، ثم النقاط الخفيفة للكلمات مع النص الشفاف للمساعدة.<br>
+        يمكن تعديل عدد الأسطر إذا أردت.
+    </p>
 </body>
 </html>
