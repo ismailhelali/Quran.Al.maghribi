@@ -61,18 +61,17 @@
             background: white;
             max-width: 900px;
         }
-        /* محاكاة حجم A4 بدقة في المعاينة */
+        /* محاكاة A4 في المعاينة */
         .group-block {
             width: 210mm;
             min-height: 297mm;
-            margin: 20px auto;
-            padding: 30mm 20mm;
+            margin: 30px auto;
+            padding: 30mm 25mm;
             background: #fff;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
             direction: rtl;
             text-align: right;
             box-sizing: border-box;
-            page-break-after: always;
             position: relative;
         }
         .training-line {
@@ -110,7 +109,7 @@
             pointer-events: none;
             direction: rtl;
             unicode-bidi: plaintext;
-            z-index: 2;
+            white-space: nowrap;
         }
         .line-wrapper {
             position: relative;
@@ -123,21 +122,16 @@
             unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
         }
         @media print {
-            body {
-                margin: 0;
-                padding: 0;
-            }
+            body { margin: 0; padding: 0; }
             .group-block {
                 width: 100%;
-                height: 100vh;
+                min-height: 100vh;
                 margin: 0;
-                padding: 30mm 20mm;
+                padding: 30mm 25mm;
                 box-shadow: none;
                 page-break-after: always;
             }
-            .preview, button, .instructions, h2 {
-                display: none !important;
-            }
+            .preview, button, .instructions, h2 { display: none !important; }
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -146,9 +140,7 @@
 <body>
     <h1>التدرب على كتابة المصحف الشريف</h1>
     <div class="instructions">
-        <p>الطريقة:</p>
         <ul style="text-align:right; direction:rtl;">
-            <li>استخدم زر "إضافة سطر جديد" للفصل بين المجموعات (كل مجموعة = صفحة تدريب).</li>
         </ul>
     </div>
 
@@ -158,7 +150,7 @@
     <br><br>
     <button onclick="generatePreview()">عرض المعاينة</button>
     <button onclick="generatePDF()">تحميل PDF للتدريب</button>
-    <button onclick="window.print()">طبع الصورة (معاينة)</button>
+    <button onclick="window.print()">طبع المعاينة</button>
 
     <div id="preview" class="preview" style="display:none;">
         <h2>معاينة صفحات التدريب (حجم A4)</h2>
@@ -208,7 +200,6 @@
 
                 const title = document.createElement('h3');
                 title.textContent = `تمرين المجموعة ${groupIndex + 1}`;
-                title.style.color = '#333';
                 title.style.marginBottom = '50px';
                 groupBlock.appendChild(title);
 
@@ -254,43 +245,46 @@
             });
 
             document.getElementById('preview').style.display = 'block';
-            document.getElementById('preview').scrollIntoView({ behavior: 'smooth' });
         }
 
         async function generatePDF() {
-            await generatePreview();
+            // تأكيد توليد المعاينة أولاً
+            generatePreview();
+
+            // انتظار قليل لضمان تحميل الخط والعناصر
+            await new Promise(resolve => setTimeout(resolve, 800));
 
             const { jsPDF } = window.jspdf;
-            // تنسيق A4 قياسي بالمليمتر (210 × 297 مم)
             const pdf = new jsPDF('p', 'mm', 'a4');
 
             const groupBlocks = document.querySelectorAll('.group-block');
 
             for (let g = 0; g < groupBlocks.length; g++) {
-                if (g > 0) pdf.addPage();
+                if (g > 0) pdf.addPage('a4');
 
-                const canvas = await html2canvas(groupBlocks[g], {
-                    scale: 2,                    // دقة أعلى لضمان جودة الطباعة
+                const block = groupBlocks[g];
+
+                const canvas = await html2canvas(block, {
+                    scale: 2,
                     useCORS: true,
                     backgroundColor: '#ffffff',
-                    width: groupBlocks[g].offsetWidth,
-                    height: groupBlocks[g].offsetHeight,
-                    logging: false
+                    logging: false,
+                    windowWidth: block.scrollWidth,
+                    windowHeight: block.scrollHeight,
+                    width: block.offsetWidth,
+                    height: block.offsetHeight
                 });
 
-                const imgData = canvas.toDataURL('image/jpeg', 0.85); // جودة جيدة مع حجم معقول
-                const pdfWidth = pdf.internal.pageSize.getWidth();   // 210 مم
-                const pdfHeight = pdf.internal.pageSize.getHeight();  // 297 مم
+                const imgData = canvas.toDataURL('image/jpeg', 0.9);
+                const pdfWidth = 210;  // A4 width in mm
+                const pdfHeight = 297; // A4 height in mm
 
-                const canvasWidth = canvas.width;
-                const canvasHeight = canvas.height;
+                // حساب النسبة لملاءمة الصفحة مع الحفاظ على التناسب
+                const ratio = Math.min(pdfWidth / canvas.width * 105, pdfHeight / canvas.height * 148.5); // نسبة تقريبية مع هوامش
+                const imgWidth = canvas.width * ratio;
+                const imgHeight = canvas.height * ratio;
 
-                // حساب النسبة لملاءمة الصفحة مع الحفاظ على الهوامش
-                const ratio = Math.min(pdfWidth / canvasWidth * 210, pdfHeight / canvasHeight * 297);
-                const imgWidth = canvasWidth * ratio;
-                const imgHeight = canvasHeight * ratio;
-
-                // توسيط الصورة في صفحة A4
+                // توسيط الصورة في الصفحة
                 const x = (pdfWidth - imgWidth) / 2;
                 const y = (pdfHeight - imgHeight) / 2;
 
@@ -302,7 +296,7 @@
     </script>
 
     <p style="margin-top:50px; font-size:18px;">
-        
+       
     </p>
 </body>
 </html>
