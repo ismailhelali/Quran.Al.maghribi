@@ -61,12 +61,11 @@
             background: white;
             max-width: 900px;
         }
-        /* إطار A4 متقدم وموثوق (دقيق تماماً) */
         .a4-frame {
             width: 210mm;
             min-height: 297mm;
             margin: 40px auto;
-            padding: 20mm 15mm; /* هوامش طبيعية للطباعة */
+            padding: 20mm 15mm;
             background: #ffffff;
             box-shadow: 0 8px 32px rgba(0,0,0,0.2);
             border: 1px solid #ddd;
@@ -97,7 +96,7 @@
             padding-bottom: 8px;
         }
         .a4-content {
-            margin-top: 35mm; /* مساحة للعنوان */
+            margin-top: 35mm;
         }
         .training-line {
             font-size: 48px;
@@ -167,16 +166,15 @@
 <body>
     <h1>التدرب على كتابة المصحف الشريف</h1>
     <div class="instructions">
-        <p>تم تحسين إطار A4 ليكون أكثر احترافية وموثوقية:</p>
+        <p>تم إصلاح مشكلة معالجة النص الطويل والمتعدد الأسطر!</p>
         <ul style="text-align:right; direction:rtl;">
-            <li>حجم دقيق 210×297 مم مع هوامش طباعة قياسية.</li>
-            <li>إطار خارجي خفيف وحد داخلي لمظهر ورقي حقيقي.</li>
-            <li>عنوان أعلى الصفحة مع خط سفلي.</li>
-            <li>مظهر احترافي جاهز للطباعة المباشرة.</li>
+            <li>الآن يدعم النصوص الطويلة، الأرقام القرآنية، والسطور المتعددة.</li>
+            <li>كل سطر في الإدخال يصبح مجموعة منفصلة (لا حاجة لـ "-" إذا كان النص جاهزاً مفصولاً).</li>
+            <li>إذا أردت فصل كلمات داخل السطر، استخدم "-" كالمعتاد.</li>
         </ul>
     </div>
 
-    <textarea id="inputText" placeholder="يَٰٓأَيُّهَا -ٱلَّذِينَ -ءَامَنُواْ"></textarea>
+    <textarea id="inputText" placeholder="الصق النص هنا..."></textarea>
     <br>
     <button id="separatorBtn" onclick="addLineBreak()">إضافة سطر جديد (للفصل بين المجموعات)</button>
     <br><br>
@@ -208,19 +206,18 @@
 
             const lines = input.split('\n');
             const groups = [];
-            let currentGroup = [];
-
             lines.forEach(line => {
                 const trimmed = line.trim();
-                if (trimmed === '' && currentGroup.length > 0) {
-                    groups.push([...currentGroup]);
-                    currentGroup = [];
-                } else if (trimmed) {
-                    const phrases = trimmed.split('-').map(p => p.trim()).filter(p => p);
-                    currentGroup = currentGroup.concat(phrases);
+                if (trimmed) {
+                    // دعم "-" للفصل داخل السطر، أو اعتباره عبارة واحدة إذا لم يكن هناك "-"
+                    const phrases = trimmed.includes('-') 
+                        ? trimmed.split('-').map(p => p.trim()).filter(p => p) 
+                        : [trimmed]; // سطر كامل كعبارة واحدة
+                    if (phrases.length > 0) {
+                        groups.push(phrases);
+                    }
                 }
             });
-            if (currentGroup.length > 0) groups.push(currentGroup);
 
             const container = document.getElementById('groupsContainer');
             container.innerHTML = '';
@@ -229,7 +226,6 @@
                 const frame = document.createElement('div');
                 frame.className = 'a4-frame';
 
-                // عنوان الصفحة
                 const header = document.createElement('div');
                 header.className = 'a4-header';
                 header.textContent = `تمرين كتابة المصحف الشريف - المجموعة ${groupIndex + 1}`;
@@ -285,7 +281,7 @@
 
         async function generatePDF() {
             generatePreview();
-            await new Promise(resolve => setTimeout(resolve, 1500)); // انتظار تحميل الخط
+            await new Promise(resolve => setTimeout(resolve, 1500));
 
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF('p', 'mm', 'a4');
@@ -305,8 +301,8 @@
                 });
 
                 const imgData = canvas.toDataURL('image/png');
-                const imgWidth = 210;  // عرض A4 كامل
-                const imgHeight = 297; // ارتفاع A4 كامل
+                const imgWidth = 210;
+                const imgHeight = 297;
 
                 pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
             }
@@ -316,12 +312,14 @@
     </script>
 
     <p style="margin-top:50px; font-size:18px;">
-        <strong>✅ إطار A4 المتقدم والموثوق:</strong><br>
-        • حجم دقيق 210×297 مم مع هوامش طباعة قياسية.<br>
-        • عنوان احترافي أعلى كل صفحة.<br>
-        • إطار داخلي وخارجي لمظهر ورقي فاخر.<br>
-        • توافق كامل مع الطباعة والـ PDF على جميع الأجهزة.<br>
-        جاهز للاستخدام المهني والتوزيع!
+        <strong>✅ تم الإصلاح:</strong><br>
+        • يدعم الآن النصوص المتعددة الأسطر والطويلة مثل النص الذي أرسلته.<br>
+        • كل سطر في الإدخال يصبح مجموعة (صفحة تدريب) منفصلة.<br>
+        • إذا كان هناك "-" داخل السطر، يفصل الكلمات، وإلا يعامل السطر كعبارة واحدة.<br>
+        <strong>جرب الآن بالصق النص التالي في الحقل:</strong><br>
+        ٱللَّهِ - تُرۡجَعُ - ٱلۡأُمُورُ<br><br>
+        (76) يَٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُواْ ٱرۡكَعُواْ وَٱسۡجُدُواْۤ وَٱعۡبُدُواْ رَبَّكُمۡ وَٱفۡعَلُواْ ٱلۡخَيۡرَ لَعَلَّكُمۡ تُفۡلِحُونَ۩<br><br>
+        (77) وَجَٰهِدُواْ فِي ٱللَّهِ حَقَّ جِهَادِهِۦۚ هُوَ ٱجۡتَبَىٰكُمۡ وَمَا جَعَلَ عَلَيۡكُمۡ فِي ٱلدِّينِ مِنۡ حَرَجٖۚ مِّلَّةَ أَبِيكُمۡ إِبۡرَٰهِيمَۚ
     </p>
 </body>
 </html>
