@@ -73,45 +73,49 @@
         .training-line {
             font-size: 48px;
             line-height: 2.4;
-            margin: 20px 0;
+            margin: 30px 0;
             direction: rtl;
-            unicode-bidi: embed;
+            unicode-bidi: plaintext;
             text-align: right;
+            position: relative;
         }
-        .line-number {
+        .phrase-container {
             display: inline-block;
-            width: 50px;
-            font-size: 28px;
-            color: #999;
-            font-family: sans-serif;
+            direction: rtl;
+            unicode-bidi: plaintext;
         }
-        .leader {
-            margin-left: 12px;
-            color: #ccc;
-            letter-spacing: 4px;
-        }
-        .dotted-phrase {
+        .phrase-text {
             color: #ddd;
             font-family: 'Almaghribi';
+            margin-left: 15px;
+        }
+        .leader-dots {
+            color: #ddd;
+            letter-spacing: 3px;
+            margin-left: 8px;
+            font-family: sans-serif;
         }
         .solid-phrase {
-            color: black;                  /* نص أسود صلب */
-            font-family: 'Almaghribi';
-            opacity: 0.18;                 /* شفاف قليلاً للمقارنة دون إزعاج */
+            color: black !important;
+            font-family: 'Almaghribi' !important;
+            opacity: 0.2;
             position: absolute;
             top: 0;
             right: 0;
             pointer-events: none;
             direction: rtl;
-            unicode-bidi: embed;
+            unicode-bidi: plaintext;
+            z-index: 2;
         }
         .line-wrapper {
             position: relative;
             display: block;
+            margin: 20px 0;
         }
         @font-face {
             font-family: 'Almaghribi';
             src: url('AALMAGHRIBI.ttf') format('truetype');
+            unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
         }
         @media print {
             body * {
@@ -128,7 +132,7 @@
                 margin: 0;
                 padding: 50px;
             }
-            .preview, button, .instructions {
+            .preview, button, .instructions, h2 {
                 display: none;
             }
         }
@@ -141,13 +145,11 @@
     <div class="instructions">
         <p>الطريقة:</p>
         <ul style="text-align:right; direction:rtl;">
-            <li>اكتب العبارات مفصولة بـ "-" داخل سطر واحد.</li>
             <li>استخدم زر "إضافة سطر جديد" للفصل بين المجموعات (كل مجموعة = صفحة تدريب).</li>
-            <li>النص الخفيف للتتبع (رمادي فاتح)، والنص الأسود الشفاف قليلاً للمقارنة.</li>
         </ul>
     </div>
 
-    <textarea id="inputText" placeholder="أدخل النص هنا..."></textarea>
+    <textarea id="inputText" placeholder="يَٰٓأَيُّهَا -ٱلَّذِينَ -ءَامَنُواْ"></textarea>
     <br>
     <button id="separatorBtn" onclick="addLineBreak()">إضافة سطر جديد (للفصل بين المجموعات)</button>
     <br><br>
@@ -185,7 +187,7 @@
             lines.forEach(line => {
                 const trimmed = line.trim();
                 if (trimmed === '' && currentGroup.length > 0) {
-                    groups.push(currentGroup);
+                    groups.push([...currentGroup]);
                     currentGroup = [];
                 } else if (trimmed) {
                     const phrases = trimmed.split('-').map(p => p.trim()).filter(p => p);
@@ -203,45 +205,45 @@
 
                 const title = document.createElement('h3');
                 title.textContent = `تمرين المجموعة ${groupIndex + 1}`;
-                title.style.marginBottom = '40px';
+                title.style.color = '#333';
+                title.style.marginBottom = '50px';
                 groupBlock.appendChild(title);
 
-                for (let i = 0; i < 10; i++) {
+                // 12 سطر تدريب بدون أرقام
+                for (let i = 0; i < 12; i++) {
                     const wrapper = document.createElement('div');
                     wrapper.className = 'line-wrapper';
 
                     const lineDiv = document.createElement('div');
                     lineDiv.className = 'training-line';
 
-                    const number = document.createElement('span');
-                    number.className = 'line-number';
-                    number.textContent = (i + 1) + '. ';
-                    lineDiv.appendChild(number);
+                    let overlayText = '';
 
                     phrases.forEach((phrase, idx) => {
-                        if (idx > 0) {
-                            const space = document.createElement('span');
-                            space.textContent = '     ';
-                            lineDiv.appendChild(space);
-                        }
+                        const phraseContainer = document.createElement('span');
+                        phraseContainer.className = 'phrase-container';
 
-                        const leader = document.createElement('span');
-                        leader.className = 'leader';
-                        leader.textContent = '..........';
-                        lineDiv.appendChild(leader);
+                        const phraseText = document.createElement('span');
+                        phraseText.className = 'phrase-text';
+                        phraseText.textContent = phrase;
+                        phraseContainer.appendChild(phraseText);
 
-                        const dotted = document.createElement('span');
-                        dotted.className = 'dotted-phrase';
-                        dotted.textContent = phrase;
-                        lineDiv.appendChild(dotted);
+                        const dots = document.createElement('span');
+                        dots.className = 'leader-dots';
+                        dots.textContent = '..........';
+                        phraseContainer.appendChild(dots);
 
-                        // النص الأسود الشفاف (للمقارنة)
-                        const solid = document.createElement('span');
-                        solid.className = 'solid-phrase';
-                        solid.textContent = '.......... ' + phrase;
-                        if (idx > 0) solid.textContent = '     ' + solid.textContent;
-                        wrapper.appendChild(solid);
+                        lineDiv.appendChild(phraseContainer);
+
+                        // للنص الأسود
+                        overlayText += phrase + ' ..........';
+                        if (idx < phrases.length - 1) overlayText += '  ';
                     });
+
+                    const solidPhrase = document.createElement('span');
+                    solidPhrase.className = 'solid-phrase';
+                    solidPhrase.textContent = overlayText;
+                    wrapper.appendChild(solidPhrase);
 
                     wrapper.appendChild(lineDiv);
                     groupBlock.appendChild(wrapper);
@@ -251,6 +253,7 @@
             });
 
             document.getElementById('preview').style.display = 'block';
+            document.getElementById('preview').scrollIntoView({ behavior: 'smooth' });
         }
 
         async function generatePDF() {
@@ -265,13 +268,13 @@
                 if (g > 0) pdf.addPage();
 
                 const canvas = await html2canvas(groupBlocks[g], {
-                    scale: 1.8,
+                    scale: 1.5, // أخف أكثر
                     useCORS: true,
                     backgroundColor: '#ffffff',
                     logging: false
                 });
 
-                const imgData = canvas.toDataURL('image/jpeg', 0.75);
+                const imgData = canvas.toDataURL('image/jpeg', 0.75); // جودة أقل قليلاً لملف أصغر
                 const imgWidth = 190;
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
                 const positionY = (pdf.internal.pageSize.getHeight() - imgHeight) / 2;
@@ -279,16 +282,12 @@
                 pdf.addImage(imgData, 'JPEG', 10, positionY > 10 ? positionY : 10, imgWidth, imgHeight);
             }
 
-            pdf.save('تدريب_كتابة_المصحف.pdf');
+            pdf.save('تدريب_كتابة_المصحف_الشريف.pdf');
         }
     </script>
 
     <p style="margin-top:50px; font-size:18px;">
-        <strong>التحديثات الأخيرة:</strong><br>
-        - محاذاة عربية كاملة (من اليمين إلى اليسار) مع direction: rtl و unicode-bidi.<br>
-        - النص المرجعي الآن <strong>أسود صلب</strong> وشفاف قليلاً ليسهل المقارنة دون إخفاء الكتابة.<br>
-        - النقاط القائدة والمسافات محافظة على الترتيب العربي الصحيح.<br>
-        جاهز للطباعة والتدريب!
+       
     </p>
 </body>
 </html>
