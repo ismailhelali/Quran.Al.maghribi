@@ -61,14 +61,19 @@
             background: white;
             max-width: 900px;
         }
+        /* محاكاة حجم A4 بدقة في المعاينة */
         .group-block {
-            page-break-after: always;
-            margin: 40px auto;
-            padding: 50px;
+            width: 210mm;
+            min-height: 297mm;
+            margin: 20px auto;
+            padding: 30mm 20mm;
             background: #fff;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
             direction: rtl;
             text-align: right;
+            box-sizing: border-box;
+            page-break-after: always;
+            position: relative;
         }
         .training-line {
             font-size: 48px;
@@ -118,22 +123,20 @@
             unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
         }
         @media print {
-            body * {
-                visibility: hidden;
-            }
-            .group-block, .group-block * {
-                visibility: visible;
+            body {
+                margin: 0;
+                padding: 0;
             }
             .group-block {
-                position: absolute;
-                left: 0;
-                top: 0;
                 width: 100%;
+                height: 100vh;
                 margin: 0;
-                padding: 50px;
+                padding: 30mm 20mm;
+                box-shadow: none;
+                page-break-after: always;
             }
             .preview, button, .instructions, h2 {
-                display: none;
+                display: none !important;
             }
         }
     </style>
@@ -155,10 +158,10 @@
     <br><br>
     <button onclick="generatePreview()">عرض المعاينة</button>
     <button onclick="generatePDF()">تحميل PDF للتدريب</button>
-    <button onclick="window.print()">طبع المعاينة</button>
+    <button onclick="window.print()">طبع الصورة (معاينة)</button>
 
     <div id="preview" class="preview" style="display:none;">
-        <h2>معاينة صفحات التدريب</h2>
+        <h2>معاينة صفحات التدريب (حجم A4)</h2>
         <div id="groupsContainer"></div>
     </div>
 
@@ -209,7 +212,6 @@
                 title.style.marginBottom = '50px';
                 groupBlock.appendChild(title);
 
-                // 12 سطر تدريب بدون أرقام
                 for (let i = 0; i < 12; i++) {
                     const wrapper = document.createElement('div');
                     wrapper.className = 'line-wrapper';
@@ -235,7 +237,6 @@
 
                         lineDiv.appendChild(phraseContainer);
 
-                        // للنص الأسود
                         overlayText += phrase + ' ..........';
                         if (idx < phrases.length - 1) overlayText += '  ';
                     });
@@ -260,6 +261,7 @@
             await generatePreview();
 
             const { jsPDF } = window.jspdf;
+            // تنسيق A4 قياسي بالمليمتر (210 × 297 مم)
             const pdf = new jsPDF('p', 'mm', 'a4');
 
             const groupBlocks = document.querySelectorAll('.group-block');
@@ -268,18 +270,31 @@
                 if (g > 0) pdf.addPage();
 
                 const canvas = await html2canvas(groupBlocks[g], {
-                    scale: 1.5, // أخف أكثر
+                    scale: 2,                    // دقة أعلى لضمان جودة الطباعة
                     useCORS: true,
                     backgroundColor: '#ffffff',
+                    width: groupBlocks[g].offsetWidth,
+                    height: groupBlocks[g].offsetHeight,
                     logging: false
                 });
 
-                const imgData = canvas.toDataURL('image/jpeg', 0.75); // جودة أقل قليلاً لملف أصغر
-                const imgWidth = 190;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                const positionY = (pdf.internal.pageSize.getHeight() - imgHeight) / 2;
+                const imgData = canvas.toDataURL('image/jpeg', 0.85); // جودة جيدة مع حجم معقول
+                const pdfWidth = pdf.internal.pageSize.getWidth();   // 210 مم
+                const pdfHeight = pdf.internal.pageSize.getHeight();  // 297 مم
 
-                pdf.addImage(imgData, 'JPEG', 10, positionY > 10 ? positionY : 10, imgWidth, imgHeight);
+                const canvasWidth = canvas.width;
+                const canvasHeight = canvas.height;
+
+                // حساب النسبة لملاءمة الصفحة مع الحفاظ على الهوامش
+                const ratio = Math.min(pdfWidth / canvasWidth * 210, pdfHeight / canvasHeight * 297);
+                const imgWidth = canvasWidth * ratio;
+                const imgHeight = canvasHeight * ratio;
+
+                // توسيط الصورة في صفحة A4
+                const x = (pdfWidth - imgWidth) / 2;
+                const y = (pdfHeight - imgHeight) / 2;
+
+                pdf.addImage(imgData, 'JPEG', x, y, imgWidth, imgHeight);
             }
 
             pdf.save('تدريب_كتابة_المصحف_الشريف.pdf');
@@ -287,7 +302,7 @@
     </script>
 
     <p style="margin-top:50px; font-size:18px;">
-       
+        
     </p>
 </body>
 </html>
