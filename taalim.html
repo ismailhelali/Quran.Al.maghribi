@@ -62,11 +62,12 @@
             max-width: 900px;
         }
         .group-block {
-            page-break-after: always; /* كل مجموعة صفحة منفصلة عند الطباعة */
+            page-break-after: always;
             margin: 40px auto;
             padding: 30px;
             background: #fff;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: right; /* محاذاة لليمين */
         }
         .training-line {
             font-size: 48px;
@@ -74,6 +75,7 @@
             color: #ddd;
             position: relative;
             margin: 20px 0;
+            text-align: right;
         }
         .overlay-text {
             font-size: 48px;
@@ -84,12 +86,16 @@
             right: 0;
             opacity: 0.15;
             pointer-events: none;
+            text-align: right;
         }
         .line-number {
             display: inline-block;
             width: 50px;
             font-size: 28px;
             color: #999;
+        }
+        .leader {
+            margin-right: 8px;
         }
         @font-face {
             font-family: 'Almaghribi';
@@ -108,7 +114,7 @@
                 top: 0;
                 width: 100%;
                 margin: 0;
-                padding: 20px;
+                padding: 40px;
             }
             .preview, button, .instructions {
                 display: none;
@@ -121,11 +127,11 @@
 <body>
     <h1>التدرب على كتابة المصحف الشريف</h1>
     <div class="instructions">
-        <p>الطريقة الجديدة:</p>
+        <p>الطريقة:</p>
         <ul style="text-align:right; direction:rtl;">
-            <li>اكتب العبارات المراد تدريب عليها مفصولة بـ "-" داخل سطر واحد (مثال: يَٰٓأَيُّهَا -ٱلَّذِينَ -ءَامَنُواْ).</li>
-            <li>استخدم زر "إضافة سطر جديد" للفصل بين <strong>المجموعات</strong> (كل مجموعة ستكون صفحة منفصلة في التمرين).</li>
-            <li>كل مجموعة ستظهر في صفحتها: عدة أسطر لإعادة الكتابة، مع نقاط خفيفة أمام كل عبارة والنص الشفاف للمقارنة.</li>
+            <li>اكتب العبارات مفصولة بـ "-" داخل سطر واحد.</li>
+            <li>استخدم زر "إضافة سطر جديد" للفصل بين المجموعات (كل مجموعة = صفحة تدريب).</li>
+            <li>في الـ PDF والمعاينة: محاذاة لليمين، نقاط قائدة (leader dots) أمام كل عبارة، حجم ملف أخف.</li>
         </ul>
     </div>
 
@@ -183,13 +189,11 @@
                 const groupBlock = document.createElement('div');
                 groupBlock.className = 'group-block';
 
-                // عنوان المجموعة (اختياري)
                 const title = document.createElement('h3');
                 title.textContent = `تمرين المجموعة ${groupIndex + 1}`;
                 title.style.marginBottom = '30px';
                 groupBlock.appendChild(title);
 
-                // 8-10 أسطر لإعادة الكتابة
                 for (let i = 0; i < 10; i++) {
                     const lineDiv = document.createElement('div');
                     lineDiv.className = 'training-line';
@@ -200,15 +204,21 @@
                     lineDiv.appendChild(number);
 
                     phrases.forEach(phrase => {
+                        const leader = document.createElement('span');
+                        leader.className = 'leader';
+                        leader.textContent = ' .......... ';
+                        leader.style.color = '#ddd';
+                        lineDiv.appendChild(leader);
+
                         const dotted = document.createElement('span');
-                        dotted.textContent = phrase + '   ';
+                        dotted.textContent = phrase + '     ';
                         dotted.style.color = '#ddd';
                         dotted.style.fontFamily = 'Almaghribi';
                         lineDiv.appendChild(dotted);
 
                         const overlay = document.createElement('span');
                         overlay.className = 'overlay-text';
-                        overlay.textContent = phrase + '   ';
+                        overlay.textContent = ' .......... ' + phrase + '     ';
                         overlay.style.fontFamily = 'Almaghribi';
                         lineDiv.appendChild(overlay);
                     });
@@ -226,7 +236,7 @@
             await generatePreview();
 
             const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF('p', 'mm', 'a4'); // عمودي ليتناسب مع الأسطر
+            const pdf = new jsPDF('p', 'mm', 'a4');
             const pageHeight = pdf.internal.pageSize.getHeight();
 
             const groupBlocks = document.querySelectorAll('.group-block');
@@ -235,31 +245,31 @@
                 if (g > 0) pdf.addPage();
 
                 const canvas = await html2canvas(groupBlocks[g], {
-                    scale: 2.5,
+                    scale: 1.8,               // انخفاض الـ scale لتقليل الدقة وحجم الملف
+                    useCORS: true,
                     backgroundColor: '#ffffff',
-                    logging: false,
-                    height: groupBlocks[g].offsetHeight + 100 // لضمان التقاط الكامل
+                    logging: false
                 });
 
-                const imgData = canvas.toDataURL('image/png');
-                const imgHeight = (canvas.height * 190) / canvas.width; // عرض الصفحة تقريباً
+                const imgData = canvas.toDataURL('image/jpeg', 0.75); // JPEG بجودة 75% لتقليل الحجم بشكل كبير
+                const imgWidth = 190;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-                let heightLeft = imgHeight;
-                let position = 10;
+                const positionY = (pageHeight - imgHeight) / 2;
 
-                pdf.addImage(imgData, 'PNG', 10, position, 190, imgHeight);
+                pdf.addImage(imgData, 'JPEG', 10, positionY > 10 ? positionY : 10, imgWidth, imgHeight);
             }
 
-            pdf.save('تدريب_كتابة_المصحف_مجموعات.pdf');
+            pdf.save('تدريب_كتابة_المصحف.pdf');
         }
     </script>
 
     <p style="margin-top:50px; font-size:18px;">
-        <strong>الآن:</strong><br>
-        - كل مجموعة (مفصولة بسطر فارغ في الإدخال) تصبح صفحة تدريب منفصلة.<br>
-        - في كل صفحة: 10 أسطر لإعادة كتابة العبارات نفسها.<br>
-        - أمام كل سطر رقم، ثم النقاط الخفيفة للكلمات مع النص الشفاف للمساعدة.<br>
-        يمكن تعديل عدد الأسطر إذا أردت.
+        <strong>التحديثات:</strong><br>
+        - محاذاة كاملة لليمين في المعاينة والـ PDF.<br>
+        - نقاط قائدة (...........) أمام كل عبارة في كل سطر.<br>
+        - حجم PDF أخف بكثير باستخدام JPEG بدلاً من PNG وتقليل الـ scale وجودة الصورة.<br>
+        جرب الآن، الملف سيكون أصغر حجماً وجودة كافية للطباعة.
     </p>
 </body>
 </html>
