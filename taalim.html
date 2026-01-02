@@ -49,8 +49,17 @@
             direction: rtl; unicode-bidi: plaintext; text-align: right; position: relative;
         }
         .phrase-container { display: inline-block; direction: rtl; unicode-bidi: plaintext; }
-        .phrase-text { color: #ddd; font-family: 'Almaghribi'; margin-left: 15px; }
-        .leader-dots { color: #ddd; letter-spacing: 3px; margin-left: 8px; font-family: sans-serif; }
+        /* النص الذي يكتبه المستخدم: أسود فاتح جداً (للتتبع) */
+        .phrase-text {
+            color: #bbbbbb; /* أسود فاتح بدلاً من الرمادي السابق */
+            font-family: 'Almaghribi';
+            margin-left: 15px;
+        }
+        .leader-dots {
+            color: #bbbbbb; /* نفس اللون للنقاط */
+            letter-spacing: 3px; margin-left: 8px; font-family: sans-serif;
+        }
+        /* النص المرجعي: أسود شفاف للمقارنة */
         .solid-single {
             color: black !important; font-family: 'Almaghribi' !important;
             opacity: 0.22; position: absolute; top: 0; right: 0;
@@ -69,11 +78,11 @@
 <body>
     <h1>التدرب على كتابة المصحف الشريف</h1>
     <div class="instructions">
-        <p>تم إصلاح الخطأ "Invalid string length" نهائياً!</p>
+        <p>تم التعديل حسب طلبك:</p>
         <ul style="text-align:right; direction:rtl;">
-            <li>لا يوجد الآن نص طويل في عنصر واحد.</li>
-            <li>كل عبارة مرجعية (سوداء شفافة) في span منفصل.</li>
-            <li>يعمل مع النصوص الطويلة جداً دون أخطاء.</li>
+            <li>النص الذي يكتبه المتدرب الآن <strong>أسود فاتح</strong> (ليس رمادياً) ليكون أوضح وأقرب للكتابة الحقيقية.</li>
+            <li>النص المرجعي (الشفاف) لا يزال أسود شفافاً للمقارنة.</li>
+            <li>النقاط القائدة أيضاً بلون أسود فاتح.</li>
         </ul>
     </div>
 
@@ -95,7 +104,7 @@
             const cursorPos = textarea.selectionStart;
             const textBefore = textarea.value.substring(0, cursorPos);
             const textAfter = textarea.value.substring(cursorPos);
-            textarea.value = textBefore + '\n\n' + textAfter;
+            textarea.value = textBefore +from '\n\n' + textAfter;
             textarea.focus();
             textarea.selectionStart = textarea.selectionEnd = cursorPos + 2;
         }
@@ -158,7 +167,6 @@
                         const solid = document.createElement('span');
                         solid.className = 'solid-single';
                         solid.textContent = phrase + ' ..........';
-                        solid.style.right = lineDiv.getBoundingClientRect ? 'auto' : '0'; // تجنب مشاكل في الحساب
                         wrapper.appendChild(solid);
                     });
 
@@ -175,7 +183,7 @@
 
         async function generatePDF() {
             generatePreview();
-            await new Promise(r => setTimeout(r, 1800)); // انتظار تحميل الخط
+            await new Promise(r => setTimeout(r, 1800));
 
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF('p', 'mm', 'a4');
@@ -198,5 +206,12 @@
             pdf.save('تدريب_كتابة_المصحف.pdf');
         }
     </script>
+
+    <p style="margin-top:50px; font-size:18px;">
+        <strong>✅ تم التعديل:</strong><br>
+        • النص الذي يكتبه المتدرب والنقاط الآن <strong>أسود فاتح</strong> لأقصى وضوح وشبه بالكتابة الحقيقية.<br>
+        • النص المرجعي الشفاف يبقى أسود خفيفاً للمقارنة دون إزعاج.<br>
+        جاهز للطباعة والتدريب المريح!
+    </p>
 </body>
 </html>
